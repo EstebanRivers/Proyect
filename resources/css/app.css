@@ -15,6 +15,21 @@
 *{ box-sizing: border-box; margin:0; padding:0; }
 html,body,#app{ height:100%; }
 
+/* Transición suave para navegación */
+body {
+  transition: opacity 0.1s ease-in-out;
+}
+
+/* Indicador de carga sutil */
+.turbo-progress-bar {
+  height: 2px;
+  background-color: var(--accent);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+}
+
 /* Contenedor principal: sidebar + main */
 .app-container{
   display: flex;
