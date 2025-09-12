@@ -22,8 +22,8 @@ Route::middleware(['auth'])->group(function () {
     
     // Perfil - accesible para todos los usuarios autenticados
     Route::get('/perfil', function () { 
-        return view('profile.index'); 
-    })->name('profile.index');
+        return view('minformacion.index'); 
+    })->name('minformacion.index');
     
     // Cursos - para profesores y estudiantes
     Route::middleware(['role:teacher,student,admin'])->group(function () {
