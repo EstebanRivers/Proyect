@@ -22,7 +22,7 @@ Route::middleware(['auth'])->group(function () {
     
     // Perfil - accesible para todos los usuarios autenticados
     Route::get('/perfil', function () { 
-        return view('profile.index'); 
+        return view('minformacion'); 
     })->name('profile.index');
     
     // Cursos - para profesores y estudiantes
