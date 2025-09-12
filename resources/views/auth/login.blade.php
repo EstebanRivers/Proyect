@@ -9,7 +9,10 @@
 <body>
     <div class="login-container">
     <!-- Imagen lado izquierdo -->
-    <div class="login-left"></div>   
+    <div class="login-left">
+        <img src="{{ asset('images/building.jpg') }}" alt="Logo UHTA" loading="lazy">
+        <img src="{{ asset('images/LOGO3.png') }}" alt="Logo UHTA" loading="lazy" style="position: absolute; bottom: 20px; center:; width: 120px; height: auto;">
+    </div>
 
     <!-- Formulario lado derecho -->
     <div class="login-right">
@@ -17,9 +20,9 @@
             
             <!-- Logo -->
             <div class="logo">
-                <img src="{{ asset('images/uhta-logo.png') }}" alt="Logo UHTA" loading="lazy">
+                <img src="{{ asset('images/LOGO2.png') }}" alt="Logo UHTA" loading="lazy">
             </div>
-
+            
             <!-- Formulario -->
             <form method="POST" action="{{ route('login') }}">
                 @csrf
@@ -44,7 +47,7 @@
                                placeholder="Ingrese su contraseña"
                                required autocomplete="current-password">
                         <span class="toggle-password" onclick="togglePassword()">
-                            <i class="icon-eye"></i>
+                        <span class="icon" ><img src="{{ asset('icons/eye-solid-full.svg') }}" alt="" style="width:18px;height:18px"></span>
                         </span>
                     </div>
                     @error('password')
@@ -66,23 +69,5 @@
         input.type = input.type === 'password' ? 'text' : 'password';
     }
 </script>
-                
-                <div class="remember-me">
-                    <input type="checkbox" id="remember" name="remember">
-                    <label for="remember">Recordarme</label>
-                </div>
-                
-                <button type="submit" class="btn-login">Iniciar Sesión</button>
-            </form>
-            
-            <div style="text-align: center; margin-top: 1.5rem; color: #666; font-size: 14px;">
-                <p>Usuarios de prueba:</p>
-                <p><strong>Admin:</strong> test@example.com</p>
-                <p><strong>Profesor:</strong> profesor@example.com</p>
-                <p><strong>Estudiante:</strong> estudiante@example.com</p>
-                <p><em>Contraseña para todos: password</em></p>
-            </div>
-        </div>
-    </div>
 </body>
 </html>
