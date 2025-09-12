@@ -1,7 +1,7 @@
 /* Archivo principal que importa todos los estilos */
-@import 'variables.css';
-@import 'base.css';
-@import 'layout.css';
-@import 'sidebar.css';
-@import 'components.css';
-@import 'responsive.css';
+@import './variables.css';
+@import './base.css';
+@import './layout.css';
+@import './sidebar.css';
+@import './components.css';
+@import './responsive.css';
