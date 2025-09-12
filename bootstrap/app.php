@@ -13,6 +13,12 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'role' => \App\Http\Middleware\RoleMiddleware::class,
+            'ajax' => \App\Http\Middleware\HandleAjaxRequests::class,
+        ]);
+        
+        // Aplicar middleware AJAX a rutas web
+        $middleware->web(append: [
+            \App\Http\Middleware\HandleAjaxRequests::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

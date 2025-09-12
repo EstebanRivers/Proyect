@@ -27,10 +27,27 @@ class LoginController extends Controller
             'password' => ['required'],
         ]);
 
+        // Verificar si es una petición AJAX
+        $isAjax = $request->ajax() || $request->wantsJson();
+
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
             
+            if ($isAjax) {
+                return response()->json([
+                    'success' => true,
+                    'redirect' => route('dashboard')
+                ]);
+            }
+            
             return redirect()->intended(route('dashboard'));
+        }
+
+        if ($isAjax) {
+            return response()->json([
+                'success' => false,
+                'errors' => ['email' => 'Las credenciales no coinciden con nuestros registros.']
+            ], 422);
         }
 
         throw ValidationException::withMessages([

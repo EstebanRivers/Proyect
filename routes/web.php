@@ -16,14 +16,12 @@ Route::get('/', function () {
 // Rutas protegidas por autenticación
 Route::middleware(['auth'])->group(function () {
     // Dashboard principal
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', \App\Livewire\Dashboard::class)->name('dashboard');
     
     // Perfil - accesible para todos los usuarios autenticados
     Route::get('/perfil', function () { 
         return view('minformacion.index'); 
-    })->name('minformacion.index');
+    })->name('profile.index');
     
     // Cursos - para profesores y estudiantes
     Route::middleware(['role:teacher,student,admin'])->group(function () {

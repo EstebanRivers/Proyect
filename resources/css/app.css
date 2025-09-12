@@ -17,17 +17,26 @@ html,body,#app{ height:100%; }
 
 /* Transición suave para navegación */
 body {
-  transition: opacity 0.1s ease-in-out;
+  transition: opacity 0.15s ease-in-out;
 }
 
-/* Indicador de carga sutil */
-.turbo-progress-bar {
-  height: 2px;
-  background-color: var(--accent);
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 9999;
+/* Optimizaciones de rendimiento */
+.main-content {
+  will-change: contents;
+}
+
+.menu li a {
+  will-change: transform, box-shadow;
+}
+
+/* Preloader para navegación */
+.navigation-loading {
+  pointer-events: none;
+}
+
+.navigation-loading .main-content {
+  opacity: 0.8;
+  transition: opacity 0.1s ease;
 }
 
 /* Contenedor principal: sidebar + main */
