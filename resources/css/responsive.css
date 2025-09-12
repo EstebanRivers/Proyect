@@ -1,0 +1,97 @@
+/* Responsive design */
+
+@media (max-width: 1200px) {
+  :root {
+    --sidebar-width: 240px;
+  }
+  
+  .main-content {
+    padding: var(--spacing-lg);
+  }
+}
+
+@media (max-width: 900px) {
+  :root {
+    --sidebar-width: var(--sidebar-width-collapsed);
+  }
+  
+  .sidebar {
+    padding: var(--spacing-md) var(--spacing-sm);
+  }
+  
+  .menu li a .text {
+    display: none;
+  }
+  
+  .menu li a {
+    justify-content: center;
+    padding: var(--spacing-md) var(--spacing-sm);
+  }
+  
+  .brand-img {
+    display: none;
+  }
+  
+  .btn-logout .text {
+    display: none;
+  }
+  
+  .btn-logout {
+    justify-content: center;
+  }
+  
+  .brand-bottom img {
+    width: 40px;
+  }
+  
+  .main-content {
+    padding: var(--spacing-md);
+  }
+  
+  .welcome {
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 600px) {
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform var(--transition-normal);
+  }
+  
+  .sidebar.mobile-open {
+    transform: translateX(0);
+  }
+  
+  .main-content {
+    margin-left: 0;
+    padding: var(--spacing-md);
+  }
+  
+  /* Overlay para móvil */
+  .sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: var(--z-overlay);
+    opacity: 0;
+    visibility: hidden;
+    transition: all var(--transition-normal);
+  }
+  
+  .sidebar-overlay.active {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+/* Estados de hover para touch devices */
+@media (hover: none) {
+  .menu li a:hover {
+    transform: none;
+    box-shadow: var(--pill-shadow);
+  }
+}
