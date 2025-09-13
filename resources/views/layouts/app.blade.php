@@ -17,8 +17,12 @@
   @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body>
-  {{-- Overlay para móvil --}}
-  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+  {{-- Botón menú móvil --}}
+  <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Abrir menú">
+    <svg viewBox="0 0 24 24" fill="currentColor">
+      <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+    </svg>
+  </button>
   
   <div class="app-container">
     @include('components.sidebar')
@@ -30,24 +34,38 @@
   
   {{-- Script para manejo móvil --}}
   <script>
-    // Manejo básico del sidebar en móvil
     document.addEventListener('DOMContentLoaded', function() {
-      const overlay = document.getElementById('sidebar-overlay');
+      const toggle = document.getElementById('mobile-menu-toggle');
       const sidebar = document.querySelector('.sidebar');
       
-      // Cerrar sidebar al hacer clic en overlay
-      if (overlay) {
-        overlay.addEventListener('click', function() {
-          sidebar.classList.remove('mobile-open');
-          overlay.classList.remove('active');
+      if (toggle && sidebar) {
+        // Toggle sidebar en móvil
+        toggle.addEventListener('click', function() {
+          sidebar.classList.toggle('mobile-visible');
+          sidebar.classList.toggle('mobile-hidden');
         });
+        
+        // Cerrar al hacer clic en el sidebar en móvil
+        sidebar.addEventListener('click', function(e) {
+          if (window.innerWidth <= 600 && e.target === sidebar) {
+            sidebar.classList.add('mobile-hidden');
+            sidebar.classList.remove('mobile-visible');
+          }
+        });
+        
+        // Inicializar estado móvil
+        function handleResize() {
+          if (window.innerWidth <= 600) {
+            sidebar.classList.add('mobile-hidden');
+            sidebar.classList.remove('mobile-visible');
+          } else {
+            sidebar.classList.remove('mobile-hidden', 'mobile-visible');
+          }
+        }
+        
+        window.addEventListener('resize', handleResize);
+        handleResize();
       }
-      
-      // Función global para abrir sidebar en móvil
-      window.toggleSidebar = function() {
-        sidebar.classList.toggle('mobile-open');
-        overlay.classList.toggle('active');
-      };
     });
   </script>
 </body>

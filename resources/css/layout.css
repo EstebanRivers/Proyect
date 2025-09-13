@@ -4,15 +4,30 @@
   min-height: 100vh;
   background: var(--page-bg);
   position: relative;
+  position: relative;
 }
 
-/* Main content */
+/* Sidebar - flex item fijo */
+.sidebar {
+  flex: 0 0 var(--sidebar-width);
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  background: var(--sidebar-bg);
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-lg);
+  box-shadow: var(--sidebar-shadow);
+  z-index: var(--z-sidebar);
+  overflow: hidden;
+}
+
+/* Main content - flex item que se expande */
 .main-content {
   flex: 1;
-  margin-left: var(--sidebar-width);
-  padding: var(--spacing-xl);
   min-height: 100vh;
   background: var(--page-bg);
+  padding: var(--spacing-xl);
   transition: opacity var(--transition-fast), transform var(--transition-fast);
   overflow-x: hidden;
   overflow-y: auto;

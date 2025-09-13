@@ -1,5 +1,25 @@
 /* Componentes reutilizables */
 
+/* Mobile menu toggle */
+.mobile-menu-toggle {
+  display: none;
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.mobile-menu-toggle:hover {
+  background: var(--accent-hover);
+  transform: scale(1.05);
+}
+
+.mobile-menu-toggle svg {
+  width: 24px;
+  height: 24px;
+}
+
 /* Indicador de carga SPA */
 #spa-loading-indicator {
   position: fixed;
