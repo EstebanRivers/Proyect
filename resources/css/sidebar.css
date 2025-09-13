@@ -102,29 +102,22 @@
 
 /* Estado activo */
 .menu li.active a {
-  background: linear-gradient(90deg, rgba(255,255,255,0.98), rgba(255,255,255,1));
-  box-shadow: 0 6px 14px rgba(0,0,0,0.08);
-  position: relative;
+  background: var(--pill-bg);
+  box-shadow: var(--pill-shadow);
+  font-weight: 600;
   color: var(--accent);}
-
-/* Barra de acento activo */
-.menu li.active a::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 4px;
-  height: 60%;
-  border-radius: 0 2px 2px 0;
-  background: linear-gradient(180deg, var(--accent), var(--accent-hover));
-  box-shadow: 0 0 8px rgba(230, 154, 55, 0.4);
-}
 
 .menu li.active a .icon {
   background: var(--accent);
   color: white;
-  box-shadow: 0 2px 8px rgba(230, 154, 55, 0.3);
+  border-radius: var(--border-radius-sm);
+  transform: scale(1.05);
+}
+
+.menu li.active a .text {
+  color: var(--accent);
+  font-weight: 600;
+  text-shadow: 0 0 1px rgba(230, 154, 55, 0.3);
 }
 
 /* Sidebar bottom - fijo en la parte inferior */
