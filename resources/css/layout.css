@@ -9,19 +9,19 @@
 
 /* Sidebar - flex item fijo */
 .sidebar {
-  flex: 0 0 var(--sidebar-width);
+  flex: 0 0 280px;
   height: 100vh;
   position: sticky;
   top: 0;
   background: var(--sidebar-bg);
   display: flex;
   flex-direction: column;
-  padding: var(--spacing-lg);
+  padding: 20px;
   box-shadow: var(--sidebar-shadow);
   z-index: var(--z-sidebar);
   overflow: hidden;
-  min-width: var(--sidebar-width);
-  max-width: var(--sidebar-width);
+  min-width: 280px;
+  max-width: 280px;
 }
 
 /* Main content - flex item que se expande */

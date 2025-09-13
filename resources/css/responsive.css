@@ -7,15 +7,11 @@
 }
 
 @media (max-width: 900px) {
-  :root {
-    --sidebar-width: var(--sidebar-width-collapsed);
-  }
-  
   .sidebar {
-    flex: 0 0 var(--sidebar-width-collapsed);
+    flex: 0 0 70px;
     padding: var(--spacing-md) var(--spacing-sm);
-    min-width: var(--sidebar-width-collapsed);
-    max-width: var(--sidebar-width-collapsed);
+    min-width: 70px;
+    max-width: 70px;
   }
   
   .menu li a .text {

@@ -42,10 +42,10 @@
 .menu li a {
   display: flex;
   align-items: center;
-  gap: var(--spacing-md);
-  padding: var(--spacing-md);
+  gap: 12px;
+  padding: 12px 16px;
   background: var(--pill-bg);
-  border-radius: var(--border-radius-md);
+  border-radius: 25px;
   box-shadow: var(--pill-shadow);
   text-decoration: none;
   color: var(--text);
@@ -54,7 +54,8 @@
   transition: all var(--transition-fast);
   position: relative;
   overflow: hidden;
-  min-height: 48px;
+  min-height: 50px;
+  border: 2px solid transparent;
 }
 
 /* Efecto hover */
@@ -84,8 +85,8 @@
 /* Iconos */
 .menu li a .icon {
   display: inline-flex;
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
   align-items: center;
   justify-content: center;
   border-radius: var(--border-radius-sm);
@@ -103,18 +104,18 @@
 
 /* Estado activo */
 .menu li.active a {
-  background: var(--pill-active-bg);
-  box-shadow: var(--pill-shadow);
+  background: var(--accent-light);
+  border: 2px solid var(--accent);
+  box-shadow: 0 2px 8px rgba(230, 154, 55, 0.2);
   font-weight: 600;
   color: var(--accent);
-  border: 1px solid rgba(230, 154, 55, 0.2);
+  transform: none;
 }
 
 .menu li.active a .icon {
   background: transparent;
   color: var(--accent);
-  border-radius: var(--border-radius-sm);
-  transform: scale(1.0);
+  transform: none;
 }
 
 .menu li.active a .text {
@@ -122,6 +123,10 @@
   font-weight: 600;
 }
 
+.menu li.active a:hover {
+  transform: none;
+  box-shadow: 0 2px 8px rgba(230, 154, 55, 0.2);
+}
 /* Sidebar bottom - fijo en la parte inferior */
 .sidebar-bottom {
   display: flex;
