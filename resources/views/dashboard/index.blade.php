@@ -8,7 +8,23 @@
     <div class="logo-container">
       <img src="{{ asset('images/umi-logo.png') }}" alt="Universidad Mundo Imperial" class="welcome-logo">
     </div>
-    <h1 class="welcome-message">¡Bienvenido(a) Usuario Master!</h1>
+    <h1 class="welcome-message">
+      @php
+        $user = Auth::user();
+        $primaryRole = $user->roles->first();
+        $roleName = $primaryRole ? $primaryRole->display_name : 'Usuario';
+        
+        // Personalizar saludo según el rol
+        $greeting = match($primaryRole?->name) {
+          'admin' => '¡Bienvenido Administrador',
+          'teacher' => '¡Bienvenido Maestro',
+          'student' => '¡Bienvenido Estudiante',
+          'billing' => '¡Bienvenido',
+          default => '¡Bienvenido'
+        };
+      @endphp
+      {{ $greeting }} {{ $user->name }}!
+    </h1>
   </div>
 </div>
 
