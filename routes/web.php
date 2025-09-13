@@ -45,10 +45,18 @@ Route::middleware(['auth'])->group(function () {
             return view('admin.index'); 
         })->name('admin.index');
         
-        // Rutas adicionales de admin
-        Route::get('/admin/usuarios', function () {
-            return view('admin.users');
-        })->name('admin.users');
+        // Gestión de roles
+        Route::prefix('admin/roles')->name('admin.roles.')->group(function () {
+            Route::get('/', [App\Http\Controllers\Admin\RoleController::class, 'index'])->name('index');
+            Route::get('/create', [App\Http\Controllers\Admin\RoleController::class, 'create'])->name('create');
+            Route::post('/', [App\Http\Controllers\Admin\RoleController::class, 'store'])->name('store');
+            Route::get('/{role}/edit', [App\Http\Controllers\Admin\RoleController::class, 'edit'])->name('edit');
+            Route::put('/{role}', [App\Http\Controllers\Admin\RoleController::class, 'update'])->name('update');
+            Route::delete('/{role}', [App\Http\Controllers\Admin\RoleController::class, 'destroy'])->name('destroy');
+            Route::get('/users', [App\Http\Controllers\Admin\RoleController::class, 'users'])->name('users');
+            Route::post('/assign', [App\Http\Controllers\Admin\RoleController::class, 'assignRole'])->name('assign');
+            Route::post('/remove', [App\Http\Controllers\Admin\RoleController::class, 'removeRole'])->name('remove');
+        });
     });
     
     // Ajustes - accesible para todos

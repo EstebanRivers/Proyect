@@ -10,7 +10,8 @@
       <div style="background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
         <h3 style="color: #e69a37; margin-bottom: 15px;">Gestión de Usuarios</h3>
         <p style="color: #666; margin-bottom: 15px;">Administrar usuarios y sus roles</p>
-        <button style="background: #e69a37; color: white; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer;">
+        <button onclick="window.navigateTo('{{ route('admin.roles.users') }}')" 
+                style="background: #e69a37; color: white; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer;">
           Ver Usuarios
         </button>
       </div>
@@ -18,7 +19,8 @@
       <div style="background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
         <h3 style="color: #e69a37; margin-bottom: 15px;">Gestión de Roles</h3>
         <p style="color: #666; margin-bottom: 15px;">Configurar roles y permisos</p>
-        <button style="background: #e69a37; color: white; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer;">
+        <button onclick="window.navigateTo('{{ route('admin.roles.index') }}')" 
+                style="background: #e69a37; color: white; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer;">
           Ver Roles
         </button>
       </div>
