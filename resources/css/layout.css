@@ -9,7 +9,7 @@
 
 /* Sidebar - flex item fijo */
 .sidebar {
-  flex: 0 0 280px;
+  flex: 0 0 260px;
   height: 100vh;
   position: sticky;
   top: 0;
@@ -20,8 +20,8 @@
   box-shadow: var(--sidebar-shadow);
   z-index: var(--z-sidebar);
   overflow: hidden;
-  min-width: 280px;
-  max-width: 280px;
+  min-width: 260px;
+  max-width: 260px;
 }
 
 /* Main content - flex item que se expande */
