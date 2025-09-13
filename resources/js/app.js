@@ -1,28 +1,25 @@
-// Navegación SPA optimizada con sidebar fijo
-class EnhancedSPANavigation {
+// Navegación SPA optimizada y simplificada
+class SimpleSPANavigation {
     constructor() {
         this.cache = new Map();
         this.currentPage = window.location.pathname;
         this.isLoading = false;
-        this.loadingTimeout = null;
-        this.preloadQueue = new Set();
         this.init();
     }
 
     init() {
         this.setupEventListeners();
-        this.preloadCriticalPages();
         this.updateActiveMenuItem();
-        this.setupIntersectionObserver();
+        this.preloadCriticalPages();
     }
 
     setupEventListeners() {
-        // Interceptar clics en enlaces del menú
+        // Interceptar clics en enlaces del menú (excluyendo el logo)
         document.addEventListener('click', (e) => {
-            const link = e.target.closest('.menu a, .brand a');
+            const link = e.target.closest('.menu a');
             if (link && this.shouldIntercept(link)) {
                 e.preventDefault();
-                this.setInmediateActivate(link);
+                this.setImmediateActivate(link);
                 this.navigate(link.href);
             }
         });
@@ -34,7 +31,7 @@ class EnhancedSPANavigation {
             }
         });
 
-        // Precargar al hacer hover con debounce
+        // Precargar al hacer hover (optimizado)
         let hoverTimeout;
         document.addEventListener('mouseenter', (e) => {
             const link = e.target.closest('.menu a');
@@ -42,39 +39,32 @@ class EnhancedSPANavigation {
                 clearTimeout(hoverTimeout);
                 hoverTimeout = setTimeout(() => {
                     this.preloadPage(link.href);
-                }, 100);
+                }, 200);
             }
         }, true);
 
-        // Limpiar timeout al salir del hover
         document.addEventListener('mouseleave', (e) => {
             const link = e.target.closest('.menu a');
             if (link) {
                 clearTimeout(hoverTimeout);
             }
         }, true);
-
-        // Manejar errores de red
-        window.addEventListener('online', () => {
-            this.handleNetworkChange(true);
-        });
-
-        window.addEventListener('offline', () => {
-            this.handleNetworkChange(false);
-        });
     }
 
-    setInmediateActivate(link){
+    setImmediateActivate(link) {
+        // Remover clase temporal de todos los elementos
         document.querySelectorAll('.menu li').forEach(li => {
             li.classList.remove('spa-activating');
         });
 
         const li = link.closest('li');
-        if (li){
+        if (li) {
+            // Desactivar otros elementos
             document.querySelectorAll('.menu li').forEach(other => {
                 if (other !== li) other.classList.remove('active');
             });
 
+            // Activar el elemento clickeado inmediatamente
             li.classList.add('active', 'spa-activating');
         }
     }
@@ -83,40 +73,35 @@ class EnhancedSPANavigation {
         return link.hostname === window.location.hostname && 
                !link.hasAttribute('data-no-intercept') &&
                !link.href.includes('logout') &&
-               !link.href.includes('#');
+               !link.href.includes('#') &&
+               !link.closest('.brand'); // Excluir enlaces del logo
     }
 
     async navigate(url) {
         if (this.isLoading || url === window.location.href) return;
         
-        // Cancelar navegación anterior si existe
-        if (this.loadingTimeout) {
-            clearTimeout(this.loadingTimeout);
-        }
-        
-        this.showLoadingState();
+        this.isLoading = true;
         
         try {
             const content = await this.loadPage(url, true);
             if (content) {
                 this.updatePage(content, url);
                 this.updateActiveMenuItem();
-                this.trackPageView(url);
             }
         } catch (error) {
             console.error('Navigation error:', error);
             this.handleNavigationError(error, url);
         } finally {
-            this.hideLoadingState();
+            this.isLoading = false;
         }
     }
 
     async loadPage(url, updateHistory = true) {
-        // Verificar cache primero
+        // Verificar cache
         const cacheKey = this.getCacheKey(url);
         if (this.cache.has(cacheKey)) {
             const cached = this.cache.get(cacheKey);
-            if (Date.now() - cached.timestamp < 180000) { // 3 minutos - reducido para mejor UX
+            if (Date.now() - cached.timestamp < 300000) { // 5 minutos
                 if (updateHistory) {
                     history.pushState({ page: url }, '', url);
                 }
@@ -126,7 +111,7 @@ class EnhancedSPANavigation {
 
         try {
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 8000); // 8s timeout - más rápido
+            const timeoutId = setTimeout(() => controller.abort(), 10000);
 
             const response = await fetch(url, {
                 method: 'GET',
@@ -160,7 +145,7 @@ class EnhancedSPANavigation {
             });
 
             // Limpiar cache si es muy grande
-            if (this.cache.size > 20) {
+            if (this.cache.size > 15) {
                 this.cleanupCache();
             }
 
@@ -191,8 +176,7 @@ class EnhancedSPANavigation {
         return {
             main: mainContent.innerHTML,
             title: title,
-            scripts: this.extractScripts(mainContent),
-            styles: this.extractStyles(doc)
+            scripts: this.extractScripts(mainContent)
         };
     }
 
@@ -211,59 +195,33 @@ class EnhancedSPANavigation {
         return scripts;
     }
 
-    extractStyles(doc) {
-        const styles = [];
-        const styleElements = doc.querySelectorAll('style, link[rel="stylesheet"]');
-        
-        styleElements.forEach(style => {
-            if (style.tagName === 'LINK') {
-                styles.push({ type: 'external', href: style.href });
-            } else {
-                styles.push({ type: 'inline', content: style.textContent });
-            }
-        });
-        
-        return styles;
-    }
-
     updatePage(content, url) {
-        // Actualizar contenido principal con animación suave
         const mainElement = document.querySelector('#main-content, .main-content');
         if (mainElement) {
-            // Fade out
-            mainElement.style.opacity = '0';
-            mainElement.style.transform = 'translateY(10px)';
+            // Transición suave sin indicadores de carga
+            mainElement.style.transition = 'opacity 0.2s ease';
+            mainElement.style.opacity = '0.7';
             
             setTimeout(() => {
                 mainElement.innerHTML = content.main;
-                
-                // Fade in
                 mainElement.style.opacity = '1';
-                mainElement.style.transform = 'translateY(0)';
                 
-                // Ejecutar scripts
+                // Ejecutar scripts si los hay
                 this.executeScripts(content.scripts);
-                this.loadStyles(content.styles);
                 
-                // Scroll al top suavemente
+                // Scroll suave al top
                 this.scrollToTop();
-            }, 150);
+            }, 100);
         }
 
         // Actualizar título
         document.title = content.title;
-        
-        // Actualizar URL actual
         this.currentPage = url;
-        
-        // Actualizar meta tags si es necesario
-        this.updateMetaTags(content);
     }
 
     executeScripts(scripts) {
         scripts.forEach(script => {
             if (script.type === 'external') {
-                // Verificar si ya está cargado
                 if (!document.querySelector(`script[src="${script.src}"]`)) {
                     const newScript = document.createElement('script');
                     newScript.src = script.src;
@@ -271,7 +229,6 @@ class EnhancedSPANavigation {
                     document.head.appendChild(newScript);
                 }
             } else {
-                // Script inline - ejecutar en contexto seguro
                 try {
                     new Function(script.content)();
                 } catch (e) {
@@ -281,98 +238,48 @@ class EnhancedSPANavigation {
         });
     }
 
-    loadStyles(styles) {
-        styles.forEach(style => {
-            if (style.type === 'external') {
-                if (!document.querySelector(`link[href="${style.href}"]`)) {
-                    const link = document.createElement('link');
-                    link.rel = 'stylesheet';
-                    link.href = style.href;
-                    document.head.appendChild(link);
+    updateActiveMenuItem() {
+        const currentPath = new URL(window.location.href).pathname.replace(/\/+$/, '') || '/';
+
+        document.querySelectorAll('.menu a').forEach(link => {
+            const li = link.closest('li');
+            if (!li) return;
+
+            const href = link.getAttribute('href') || '#';
+            let linkPath = '/';
+            try {
+                linkPath = new URL(href, window.location.origin).pathname.replace(/\/+$/, '') || '/';
+            } catch (e) {
+                linkPath = href.replace(/\/+$/, '') || '/';
+            }
+
+            const isMatch = (linkPath === currentPath) || 
+                           (linkPath !== '/' && currentPath.startsWith(linkPath + '/')) || 
+                           (linkPath !== '/' && currentPath === linkPath);
+
+            if (isMatch) {
+                if (!li.classList.contains('active')) {
+                    li.classList.add('active');
                 }
+                li.classList.remove('spa-activating');
             } else {
-                // Evitar duplicar estilos inline
-                const existingStyle = Array.from(document.querySelectorAll('style'))
-                    .find(s => s.textContent === style.content);
-                
-                if (!existingStyle) {
-                    const styleElement = document.createElement('style');
-                    styleElement.textContent = style.content;
-                    document.head.appendChild(styleElement);
+                if (!li.classList.contains('spa-activating')) {
+                    li.classList.remove('active');
                 }
             }
         });
     }
 
-updateActiveMenuItem() {
-    const currentPath = new URL(window.location.href).pathname.replace(/\/+$/, '') || '/';
-    // console.log('updateActiveMenuItem ->', currentPath);
-
-    document.querySelectorAll('.menu a').forEach(link => {
-        const li = link.closest('li');
-        if (!li) return;
-
-        const href = link.getAttribute('href') || '#';
-        let linkPath = '/';
-        try {
-            linkPath = new URL(href, window.location.origin).pathname.replace(/\/+$/, '') || '/';
-        } catch (e) {
-            linkPath = href.replace(/\/+$/, '') || '/';
-        }
-
-        // coincidencia: igualdad o prefijo (pero no '/' como prefijo agresivo)
-        const isMatch = (linkPath === currentPath) || (linkPath !== '/' && currentPath.startsWith(linkPath + '/')) || (linkPath !== '/' && currentPath === linkPath);
-
-        if (isMatch) {
-            if (!li.classList.contains('active')) {
-                li.classList.add('active');
-            }
-            // limpiar marcador temporal si existía
-            if (li.classList.contains('spa-activating')) {
-                li.classList.remove('spa-activating');
-            }
-        } else {
-            // Solo quitar si no fue marcado como "spa-activating" por el click reciente
-            if (!li.classList.contains('spa-activating')) {
-                li.classList.remove('active');
-            }
-        }
-    });
-}
-
-
-
     preloadCriticalPages() {
-        const criticalPages = [
-            '/dashboard',
-            '/perfil',
-            '/ajustes'
-        ];
-
-        // Precargar después de que la página esté completamente cargada
+        const criticalPages = ['/dashboard', '/mi-informacion', '/ajustes'];
+        
         setTimeout(() => {
             criticalPages.forEach(page => {
                 if (page !== this.currentPage) {
-                    this.preloadQueue.add(window.location.origin + page);
+                    this.preloadPage(window.location.origin + page);
                 }
             });
-            this.processPreloadQueue();
-        }, 2000);
-    }
-
-    async processPreloadQueue() {
-        for (const url of this.preloadQueue) {
-            if (!this.cache.has(this.getCacheKey(url))) {
-                try {
-                    await this.preloadPage(url);
-                    // Pequeña pausa entre precargas para no saturar
-                    await new Promise(resolve => setTimeout(resolve, 100));
-                } catch (error) {
-                    console.debug('Preload failed for:', url);
-                }
-            }
-            this.preloadQueue.delete(url);
-        }
+        }, 3000);
     }
 
     async preloadPage(url) {
@@ -385,99 +292,12 @@ updateActiveMenuItem() {
         }
     }
 
-    showLoadingState() {
-        this.isLoading = true;
-        
-        // Agregar clase de loading al body
-        document.body.classList.add('navigation-loading');
-        
-        // Mostrar indicador de carga en la barra superior
-        this.createLoadingIndicator();
-        
-        // Timeout de seguridad
-        this.loadingTimeout = setTimeout(() => {
-            this.hideLoadingState();
-        }, 15000);
-    }
-
-    createLoadingIndicator() {
-        // Remover indicador existente
-        const existing = document.querySelector('#spa-loading-indicator');
-        if (existing) existing.remove();
-        
-        const indicator = document.createElement('div');
-        indicator.id = 'spa-loading-indicator';
-        indicator.innerHTML = `
-            <div class="loading-bar"></div>
-            <div class="loading-text">Cargando...</div>
-        `;
-        document.body.appendChild(indicator);
-    }
-
-    hideLoadingState() {
-        this.isLoading = false;
-        document.body.classList.remove('navigation-loading');
-        
-        const indicator = document.querySelector('#spa-loading-indicator');
-        if (indicator) {
-            indicator.style.opacity = '0';
-            setTimeout(() => indicator.remove(), 300);
-        }
-        
-        if (this.loadingTimeout) {
-            clearTimeout(this.loadingTimeout);
-            this.loadingTimeout = null;
-        }
-    }
-
     handleNavigationError(error, url) {
         console.error('Navigation failed:', error);
-        
-        // Mostrar mensaje de error al usuario
-        this.showErrorMessage('Error al cargar la página. Reintentando...');
-        
-        // Reintentar una vez
+        // Fallback: navegar normalmente
         setTimeout(() => {
             window.location.href = url;
-        }, 2000);
-    }
-
-    showErrorMessage(message) {
-        const errorDiv = document.createElement('div');
-        errorDiv.className = 'spa-error-message';
-        errorDiv.textContent = message;
-        document.body.appendChild(errorDiv);
-        
-        setTimeout(() => {
-            errorDiv.style.opacity = '0';
-            setTimeout(() => errorDiv.remove(), 300);
-        }, 3000);
-    }
-
-    handleNetworkChange(isOnline) {
-        if (!isOnline) {
-            this.showErrorMessage('Conexión perdida. Algunas funciones pueden no estar disponibles.');
-        } else {
-            // Limpiar cache al reconectar
-            this.cache.clear();
-        }
-    }
-
-    setupIntersectionObserver() {
-        // Observer para lazy loading de contenido
-        if ('IntersectionObserver' in window) {
-            this.observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        // Precargar páginas relacionadas cuando el usuario está cerca
-                        const link = entry.target.querySelector('a');
-                        if (link && this.shouldIntercept(link)) {
-                            this.preloadPage(link.href);
-                        }
-                    }
-                });
-            }, { threshold: 0.1 });
-        }
+        }, 1000);
     }
 
     scrollToTop() {
@@ -485,16 +305,6 @@ updateActiveMenuItem() {
         if (mainContent) {
             mainContent.scrollTo({ top: 0, behavior: 'smooth' });
         }
-    }
-
-    trackPageView(url) {
-        // Aquí puedes agregar analytics si es necesario
-        console.debug('Page view:', url);
-    }
-
-    updateMetaTags(content) {
-        // Actualizar meta tags dinámicamente si es necesario
-        // Por ejemplo, meta description, og tags, etc.
     }
 
     getCacheKey(url) {
@@ -506,10 +316,9 @@ updateActiveMenuItem() {
     }
 
     cleanupCache() {
-        // Mantener solo las 15 páginas más recientes
         const entries = Array.from(this.cache.entries())
             .sort((a, b) => b[1].timestamp - a[1].timestamp)
-            .slice(0, 15);
+            .slice(0, 10);
         
         this.cache.clear();
         entries.forEach(([key, value]) => {
@@ -517,35 +326,22 @@ updateActiveMenuItem() {
         });
     }
 
-    // Métodos públicos para control externo
+    // Métodos públicos
     clearCache() {
         this.cache.clear();
     }
 
-    invalidatePage(url) {
-        this.cache.delete(this.getCacheKey(url));
-    }
-
-    prefetchPage(url) {
-        this.preloadPage(url);
-    }
-
-    getCurrentPage() {
-        return this.currentPage;
-    }
-
-    isPageCached(url) {
-        return this.cache.has(this.getCacheKey(url));
+    navigateTo(url) {
+        this.navigate(url);
     }
 }
 
 // Inicializar cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', () => {
-    window.spaNav = new EnhancedSPANavigation();
+    window.spaNav = new SimpleSPANavigation();
     
-    // Exponer métodos útiles globalmente
-    window.navigateTo = (url) => window.spaNav.navigate(url);
-    window.prefetchPage = (url) => window.spaNav.prefetchPage(url);
+    // Exponer método de navegación globalmente
+    window.navigateTo = (url) => window.spaNav.navigateTo(url);
 });
 
 // Limpiar al cerrar
@@ -553,13 +349,4 @@ window.addEventListener('beforeunload', () => {
     if (window.spaNav) {
         window.spaNav.clearCache();
     }
-});
-
-// Manejar errores globales
-window.addEventListener('error', (e) => {
-    console.error('Global error:', e.error);
-});
-
-window.addEventListener('unhandledrejection', (e) => {
-    console.error('Unhandled promise rejection:', e.reason);
 });

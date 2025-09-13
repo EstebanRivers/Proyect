@@ -1,10 +1,10 @@
 <!-- resources/views/partials/sidebar.blade.php -->
 <aside class="sidebar" role="navigation" aria-label="Menú de navegación principal">
   <div class="sidebar-top">
-    <a href="{{ route('dashboard') }}" class="brand">
+    <div class="brand">
       <!-- tu logo arriba -->
       <img src="{{ asset('images/LOGO2.png') }}" alt="Logo UHTA" class="brand-img" loading="lazy">
-    </a>
+    </div>
   </div>
 
   <nav class="menu" aria-label="Menú principal">

@@ -6,12 +6,8 @@
   padding: 0;
   margin-bottom: var(--spacing-lg);
   border-bottom: 0px solid var(--border);
-  transition: transform var(--transition-fast);
   flex-shrink: 0; /* No se comprime */
-}
-
-.sidebar .brand:hover {
-  transform: scale(1.02);
+  cursor: default;
 }
 
 .brand-img {
@@ -19,7 +15,6 @@
   max-width: 120px;
   height: auto;
   filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
-  
 }
 
 /* Menu - área flexible */
