@@ -22,6 +22,7 @@ class EnhancedSPANavigation {
             const link = e.target.closest('.menu a, .brand a');
             if (link && this.shouldIntercept(link)) {
                 e.preventDefault();
+                this.setInmediateActivate(link);
                 this.navigate(link.href);
             }
         });
@@ -61,6 +62,21 @@ class EnhancedSPANavigation {
         window.addEventListener('offline', () => {
             this.handleNetworkChange(false);
         });
+    }
+
+    setInmediateActivate(link){
+        document.querySelectorAll('.menu li').forEach(li => {
+            li.classList.remove('spa-activating');
+        });
+
+        const li = link.closest('li');
+        if (li){
+            document.querySelectorAll('.menu li').forEach(other => {
+                if (other !== li) other.classList.remove('active');
+            });
+
+            li.classList.add('active', 'spa-activating');
+        }
     }
 
     shouldIntercept(link) {
@@ -288,22 +304,43 @@ class EnhancedSPANavigation {
         });
     }
 
-    updateActiveMenuItem() {
-        // Remover clase active de todos los items
-        document.querySelectorAll('.menu li').forEach(li => {
-            li.classList.remove('active');
-        });
+updateActiveMenuItem() {
+    const currentPath = new URL(window.location.href).pathname.replace(/\/+$/, '') || '/';
+    // console.log('updateActiveMenuItem ->', currentPath);
 
-        // Agregar clase active al item actual
-        const currentPath = window.location.pathname;
-        document.querySelectorAll('.menu a').forEach(link => {
-            const href = link.getAttribute('href');
-            if (href === currentPath || (currentPath.startsWith(href) && href !== '/')) {
-                const li = link.closest('li');
-                if (li) li.classList.add('active');
+    document.querySelectorAll('.menu a').forEach(link => {
+        const li = link.closest('li');
+        if (!li) return;
+
+        const href = link.getAttribute('href') || '#';
+        let linkPath = '/';
+        try {
+            linkPath = new URL(href, window.location.origin).pathname.replace(/\/+$/, '') || '/';
+        } catch (e) {
+            linkPath = href.replace(/\/+$/, '') || '/';
+        }
+
+        // coincidencia: igualdad o prefijo (pero no '/' como prefijo agresivo)
+        const isMatch = (linkPath === currentPath) || (linkPath !== '/' && currentPath.startsWith(linkPath + '/')) || (linkPath !== '/' && currentPath === linkPath);
+
+        if (isMatch) {
+            if (!li.classList.contains('active')) {
+                li.classList.add('active');
             }
-        });
-    }
+            // limpiar marcador temporal si existía
+            if (li.classList.contains('spa-activating')) {
+                li.classList.remove('spa-activating');
+            }
+        } else {
+            // Solo quitar si no fue marcado como "spa-activating" por el click reciente
+            if (!li.classList.contains('spa-activating')) {
+                li.classList.remove('active');
+            }
+        }
+    });
+}
+
+
 
     preloadCriticalPages() {
         const criticalPages = [
