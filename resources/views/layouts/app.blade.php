@@ -7,11 +7,14 @@
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <meta name="description" content="Sistema de gestión UHTA">
   <meta name="theme-color" content="#e69a37">
+  <meta name="robots" content="noindex, nofollow">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>@yield('title','Dashboard')</title>
 
   {{-- Preload critical resources --}}
   <link rel="preload" href="{{ asset('images/LOGO2.png') }}" as="image">
   <link rel="preload" href="{{ asset('images/LOGO3.png') }}" as="image">
+  <link rel="preload" href="{{ asset('images/uhta-logo.png') }}" as="image">
   
   {{-- Vite inyecta los enlaces a CSS/JS de resources --}}
   @vite(['resources/css/app.css', 'resources/js/app.js'])

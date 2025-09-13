@@ -25,6 +25,10 @@ class LoginController extends Controller
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
+        ], [
+            'email.required' => 'El campo email es obligatorio.',
+            'email.email' => 'El formato del email no es válido.',
+            'password.required' => 'El campo contraseña es obligatorio.',
         ]);
 
         // Verificar si es una petición AJAX

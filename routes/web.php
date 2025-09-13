@@ -21,7 +21,7 @@ Route::middleware(['auth'])->group(function () {
     })->name('dashboard');
     
     // Perfil - accesible para todos los usuarios autenticados
-    Route::get('/perfil', function () { 
+    Route::get('/mi-informacion', function () { 
         return view('minformacion'); 
     })->name('profile.index');
     
@@ -44,6 +44,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/admin', function () { 
             return view('admin.index'); 
         })->name('admin.index');
+        
+        // Rutas adicionales de admin
+        Route::get('/admin/usuarios', function () {
+            return view('admin.users');
+        })->name('admin.users');
     });
     
     // Ajustes - accesible para todos

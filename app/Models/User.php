@@ -81,4 +81,23 @@ class User extends Authenticatable
             $this->roles()->attach($role->id);
         }
     }
+
+    /**
+     * Remover un rol del usuario
+     */
+    public function removeRole(string $roleName): void
+    {
+        $role = Role::where('name', $roleName)->first();
+        if ($role) {
+            $this->roles()->detach($role->id);
+        }
+    }
+
+    /**
+     * Obtener nombres de roles como array
+     */
+    public function getRoleNames(): array
+    {
+        return $this->roles->pluck('name')->toArray();
+    }
 }

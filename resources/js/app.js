@@ -100,7 +100,7 @@ class EnhancedSPANavigation {
         const cacheKey = this.getCacheKey(url);
         if (this.cache.has(cacheKey)) {
             const cached = this.cache.get(cacheKey);
-            if (Date.now() - cached.timestamp < 300000) { // 5 minutos
+            if (Date.now() - cached.timestamp < 180000) { // 3 minutos - reducido para mejor UX
                 if (updateHistory) {
                     history.pushState({ page: url }, '', url);
                 }
@@ -110,7 +110,7 @@ class EnhancedSPANavigation {
 
         try {
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
+            const timeoutId = setTimeout(() => controller.abort(), 8000); // 8s timeout - más rápido
 
             const response = await fetch(url, {
                 method: 'GET',

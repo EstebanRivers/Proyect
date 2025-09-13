@@ -88,8 +88,8 @@
 /* Iconos */
 .menu li a .icon {
   display: inline-flex;
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   align-items: center;
   justify-content: center;
   border-radius: 6px;
@@ -99,8 +99,7 @@
 }
 
 .menu li.active a .icon {
-  background: transparent;
-  color: white;
+  color: var(--accent);
 }
 
 .menu li.active a .text {
@@ -111,8 +110,8 @@
 }
 
 .menu li.active a:hover {
-  transform: none;
-  box-shadow: var(--pill-shadow);
+  transform: translateY(-1px);
+  box-shadow: var(--pill-hover-shadow);
 }
 
 /* Sidebar bottom - fijo en la parte inferior */
