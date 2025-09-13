@@ -4,7 +4,7 @@
   align-items: center;
   justify-content: center;
   padding: 0;
-  margin-bottom: 5%;
+  margin-bottom: var(--spacing-lg);
   border-bottom: 0px solid var(--border);
   transition: transform var(--transition-fast);
   flex-shrink: 0; /* No se comprime */
@@ -15,8 +15,8 @@
 }
 
 .brand-img {
-  width: 80%;
-  max-width: 105px;
+  width: 85%;
+  max-width: 120px;
   height: auto;
   filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
 }
@@ -43,7 +43,7 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-md);
-  padding: 5px var(--spacing-md);
+  padding: var(--spacing-md);
   background: var(--pill-bg);
   border-radius: var(--border-radius-md);
   box-shadow: var(--pill-shadow);
@@ -54,6 +54,7 @@
   transition: all var(--transition-fast);
   position: relative;
   overflow: hidden;
+  min-height: 48px;
 }
 
 /* Efecto hover */
@@ -83,8 +84,8 @@
 /* Iconos */
 .menu li a .icon {
   display: inline-flex;
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   align-items: center;
   justify-content: center;
   border-radius: var(--border-radius-sm);
@@ -102,22 +103,23 @@
 
 /* Estado activo */
 .menu li.active a {
-  background: var(--pill-bg);
+  background: var(--pill-active-bg);
   box-shadow: var(--pill-shadow);
   font-weight: 600;
-  color: var(--accent);}
+  color: var(--accent);
+  border: 1px solid rgba(230, 154, 55, 0.2);
+}
 
 .menu li.active a .icon {
-  background: var(--accent);
-  color: white;
+  background: transparent;
+  color: var(--accent);
   border-radius: var(--border-radius-sm);
-  transform: scale(1.05);
+  transform: scale(1.0);
 }
 
 .menu li.active a .text {
   color: var(--accent);
   font-weight: 600;
-  text-shadow: 0 0 1px rgba(230, 154, 55, 0.3);
 }
 
 /* Sidebar bottom - fijo en la parte inferior */
@@ -128,6 +130,7 @@
   padding-top: var(--spacing-lg);
   border-top: 1px solid var(--border);
   flex-shrink: 0; /* No se comprime */
+  margin-top: auto;
 }
 
 /* Botón logout */
@@ -149,6 +152,7 @@
   transition: all var(--transition-fast);
   width: 100%;
   text-align: left;
+  min-height: 48px;
 }
 
 .btn-logout:hover {
@@ -160,8 +164,8 @@
 
 .btn-logout .icon {
   display: inline-flex;
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   align-items: center;
   justify-content: center;
   border-radius: var(--border-radius-sm);
@@ -181,7 +185,7 @@
   justify-content: center;
   align-items: center;
   padding: var(--spacing-md);
-  margin: 0 calc(-1 * var(--spacing-md)) calc(-1 * var(--spacing-lg));
+  margin: 0 calc(-1 * var(--spacing-lg)) calc(-1 * var(--spacing-lg));
   border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }

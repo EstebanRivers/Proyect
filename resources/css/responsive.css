@@ -14,6 +14,8 @@
   .sidebar {
     flex: 0 0 var(--sidebar-width-collapsed);
     padding: var(--spacing-md) var(--spacing-sm);
+    min-width: var(--sidebar-width-collapsed);
+    max-width: var(--sidebar-width-collapsed);
   }
   
   .menu li a .text {
@@ -23,6 +25,7 @@
   .menu li a {
     justify-content: center;
     padding: var(--spacing-md) var(--spacing-sm);
+    min-height: 44px;
   }
   
   .brand-img {
@@ -35,6 +38,7 @@
   
   .btn-logout {
     justify-content: center;
+    min-height: 44px;
   }
   
   .brand-bottom img {

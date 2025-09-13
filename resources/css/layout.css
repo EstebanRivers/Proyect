@@ -20,6 +20,8 @@
   box-shadow: var(--sidebar-shadow);
   z-index: var(--z-sidebar);
   overflow: hidden;
+  min-width: var(--sidebar-width);
+  max-width: var(--sidebar-width);
 }
 
 /* Main content - flex item que se expande */
