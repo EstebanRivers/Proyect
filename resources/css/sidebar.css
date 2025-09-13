@@ -59,26 +59,30 @@
 }
 
 /* Efecto hover */
-.menu li a::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, 
-    transparent, 
-    rgba(230, 154, 55, 0.1), 
-    transparent
-  );
-  transition: left var(--transition-normal);
-}
-
-
-
 .menu li a:hover {
   transform: translateY(-2px);
-  box-shadow: var(--pill-hover-shadow);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.06);
+  color: var(--accent);
+}
+
+/* Estado activo */
+.menu li.active a {
+  background: linear-gradient(90deg, rgba(255,255,255,0.98), rgba(255,255,255,1));
+  box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+  position: relative;
+  color: var(--accent);
+}
+
+/* Línea o barra de acento a la izquierda del pill activo */
+.menu li.active a::before{
+  content:'';
+  position:absolute;
+  left:-6px;
+  width:6px;
+  height:60%;
+  top:20%;
+  border-radius: 0 4px 4px 0;
+  background: var(--accent);
 }
 
 /* Iconos */
@@ -94,31 +98,23 @@
   flex-shrink: 0;
 }
 
-/* Estado activo */
-.menu li.active a {
-  background: var(--pill-active-bg-light);
-  border: 1px solid transparent;
-  box-shadow: var(--pill-shadow);
-  font-weight: 600;
-  color: var(--accent);
-  transform: none;
-}
-
 .menu li.active a .icon {
   background: transparent;
-  color: var(--accent);
-  transform: none;
+  color: white;
 }
 
 .menu li.active a .text {
   color: var(--accent);
-  font-weight: 600;
+  font-weight: 700;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  position: relative;
 }
 
 .menu li.active a:hover {
   transform: none;
   box-shadow: var(--pill-shadow);
 }
+
 /* Sidebar bottom - fijo en la parte inferior */
 .sidebar-bottom {
   display: flex;
