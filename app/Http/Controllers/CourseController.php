@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Course;
 use App\Models\CourseEnrollment;
 use App\Models\User;
+use App\Models\CourseTopic;
+use App\Models\StudentTopicProgress;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -61,6 +63,7 @@ class CourseController extends Controller
      */
     public function store(Request $request)
     {
+        
         $this->authorize('create', Course::class);
 
         $validated = $request->validate([
