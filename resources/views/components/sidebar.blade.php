@@ -29,7 +29,7 @@
       </li>
       @endif
 
-      @if(Auth::user()->hasAnyRole(['billing', 'admin']))
+      @if(Auth::user()->hasAnyRole(['student', 'admin']))
       <li class="@if(request()->routeIs('billing.*')) active @endif">
         <a href="{{ route('billing.index') }}">
           <span class="icon" aria-hidden="true">

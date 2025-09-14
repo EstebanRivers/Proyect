@@ -3,12 +3,13 @@
 @section('title', 'Mi Información - UHTA')
 
 @section('content')
-<div class="profile-container">
-    <!-- Header -->
-    <div class="profile-header">
+
+  <!-- Header -->
+<div class="profile-header">
         <h1 class="profile-title">PERFIL</h1>
         <p class="profile-welcome">¡Bienvenido(a) {{ Auth::user()->name }}!</p>
     </div>
+<div class="profile-container">
 
     <!-- Contenedor principal del perfil -->
     <div class="profile-card">
@@ -18,9 +19,7 @@
             <!-- Icono de perfil -->
             <div class="profile-avatar">
                 <div class="profile-icon">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-                    </svg>
+                    <img src="{{ asset('icons/circle-user-solid-full.svg') }}" alt="Icono de usuario">
                 </div>
             </div>
             
@@ -30,7 +29,7 @@
             </h2>
         </div>
 
-        <!-- Información detallada -->
+        <!-- Información de tipo de usuario -->
         <div class="profile-details">
             <div class="profile-grid">
                 
@@ -63,8 +62,12 @@
                         </span>
                     </div>
                 </div>
+            </div>
 
-                <!-- Correo -->
+            <!-- Información de general -->
+            <div class="profile-section">
+                <div class="profile-grid">
+                    <!-- Correo -->
                 <div>
                     <div class="profile-field">
                         <span class="profile-label">Correo:</span>
@@ -119,13 +122,7 @@
                         </span>
                     </div>
                 </div>
-            </div>
-
-            <!-- Sección de Dirección -->
-            <div class="profile-section">
-                <h3 class="profile-section-title">Dirección:</h3>
-                
-                <div class="profile-grid">
+                    
                     <!-- Colonia -->
                     <div>
                         <div class="profile-field">
