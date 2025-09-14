@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Course;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use App\Models\Role;
 
 class CourseSeeder extends Seeder
 {
@@ -22,6 +23,25 @@ class CourseSeeder extends Seeder
             $this->command->warn('No hay instructores disponibles. Creando cursos sin instructor específico.');
             $instructor = User::first();
         }
+                $instructor = User::whereHas('roles', function ($query) {
+                    $query->whereIn('name', ['docente', 'admin']);
+                })->first();
+
+if (!$instructor) {
+    $this->command->warn('No hay instructores disponibles. Creando uno por defecto.');
+
+    $instructor = User::create([
+        'name' => 'Instructor Genérico',
+        'email' => 'instructor@example.com',
+        'password' => bcrypt('password'), // o el hash que uses
+    ]);
+
+    // Asignar rol por defecto
+    $instructor->roles()->attach(
+        Role::where('name', 'docente')->first()->id
+    );
+}
+
 
         // Cursos básicos (sin prerrequisitos)
         $basicCourses = [
@@ -33,10 +53,9 @@ class CourseSeeder extends Seeder
                 'difficulty' => 'basico',
                 'credits' => 3,
                 'duration_hours' => 40,
-                'price' => 0,
                 'max_students' => 30,
                 'min_students' => 5,
-                'instructor_id' => $instructor->id,
+                'instructor_id' => $instructor?->id,
                 'status' => 'activo',
             ],
             [
@@ -47,10 +66,9 @@ class CourseSeeder extends Seeder
                 'difficulty' => 'basico',
                 'credits' => 4,
                 'duration_hours' => 50,
-                'price' => 500,
                 'max_students' => 25,
                 'min_students' => 8,
-                'instructor_id' => $instructor->id,
+                'instructor_id' => $instructor?->id,
                 'status' => 'activo',
             ],
             [
@@ -61,10 +79,9 @@ class CourseSeeder extends Seeder
                 'difficulty' => 'basico',
                 'credits' => 3,
                 'duration_hours' => 35,
-                'price' => 750,
                 'max_students' => 20,
                 'min_students' => 6,
-                'instructor_id' => $instructor->id,
+                'instructor_id' => $instructor?->id,
                 'status' => 'activo',
             ],
         ];
@@ -83,10 +100,9 @@ class CourseSeeder extends Seeder
                 'difficulty' => 'intermedio',
                 'credits' => 4,
                 'duration_hours' => 60,
-                'price' => 1200,
                 'max_students' => 25,
                 'min_students' => 8,
-                'instructor_id' => $instructor->id,
+                'instructor_id' => $instructor?->id,
                 'status' => 'activo',
                 'prerequisites' => ['COMP101', 'LOGIC101'],
             ],
@@ -98,10 +114,9 @@ class CourseSeeder extends Seeder
                 'difficulty' => 'intermedio',
                 'credits' => 4,
                 'duration_hours' => 55,
-                'price' => 1500,
                 'max_students' => 20,
                 'min_students' => 6,
-                'instructor_id' => $instructor->id,
+                'instructor_id' => $instructor?->id,
                 'status' => 'activo',
                 'prerequisites' => ['COMP101', 'MATH101'],
             ],
@@ -113,10 +128,9 @@ class CourseSeeder extends Seeder
                 'difficulty' => 'intermedio',
                 'credits' => 5,
                 'duration_hours' => 70,
-                'price' => 1800,
                 'max_students' => 30,
                 'min_students' => 10,
-                'instructor_id' => $instructor->id,
+                'instructor_id' => $instructor?->id,
                 'status' => 'activo',
                 'prerequisites' => ['COMP101', 'LOGIC101'],
             ],
@@ -145,10 +159,9 @@ class CourseSeeder extends Seeder
                 'difficulty' => 'avanzado',
                 'credits' => 5,
                 'duration_hours' => 80,
-                'price' => 2500,
                 'max_students' => 15,
                 'min_students' => 5,
-                'instructor_id' => $instructor->id,
+                'instructor_id' => $instructor?->id,
                 'status' => 'activo',
                 'prerequisites' => ['PY201', 'DS201'],
             ],
@@ -160,10 +173,9 @@ class CourseSeeder extends Seeder
                 'difficulty' => 'avanzado',
                 'credits' => 6,
                 'duration_hours' => 100,
-                'price' => 3000,
                 'max_students' => 20,
                 'min_students' => 8,
-                'instructor_id' => $instructor->id,
+                'instructor_id' => $instructor?->id,
                 'status' => 'activo',
                 'prerequisites' => ['WEB201', 'PY201'],
             ],
@@ -175,10 +187,9 @@ class CourseSeeder extends Seeder
                 'difficulty' => 'avanzado',
                 'credits' => 5,
                 'duration_hours' => 90,
-                'price' => 3500,
                 'max_students' => 12,
                 'min_students' => 4,
-                'instructor_id' => $instructor->id,
+                'instructor_id' => $instructor?->id,
                 'status' => 'activo',
                 'prerequisites' => ['PY201', 'DS201', 'ALG301'],
             ],
