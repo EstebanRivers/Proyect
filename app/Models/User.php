@@ -114,4 +114,44 @@ class User extends Authenticatable
     {
         return $this->roles->pluck('name')->toArray();
     }
+
+    /**
+     * Inscripciones del usuario a cursos
+     */
+    public function enrollments(): HasMany
+    {
+        return $this->hasMany(CourseEnrollment::class);
+    }
+
+    /**
+     * Cursos en los que está inscrito el usuario
+     */
+    public function courses(): BelongsToMany
+    {
+        return $this->belongsToMany(Course::class, 'course_enrollments')
+                    ->withPivot('status', 'grade', 'enrolled_at', 'completed_at')
+                    ->withTimestamps();
+    }
+
+    /**
+     * Verificar si el usuario está inscrito en un curso
+     */
+    public function isEnrolledIn(Course $course): bool
+    {
+        return $this->enrollments()
+            ->where('course_id', $course->id)
+            ->where('status', 'inscrito')
+            ->exists();
+    }
+
+    /**
+     * Verificar si el usuario completó un curso
+     */
+    public function hasCompleted(Course $course): bool
+    {
+        return $this->enrollments()
+            ->where('course_id', $course->id)
+            ->where('status', 'completado')
+            ->exists();
+    }
 }
