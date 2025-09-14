@@ -138,6 +138,118 @@ class CourseController extends Controller
     }
 
     /**
+     * Mostrar un curso específico
+     */
+    public function show(Course $course, Request $request)
+    {
+        $user = Auth::user();
+        
+        // Cargar relaciones necesarias
+        $course->load(['instructor', 'prerequisites', 'topics.contents', 'topics.activities']);
+        
+        // Verificar inscripción del usuario
+        $enrollment = null;
+        if ($user->hasAnyRole(['alumno', 'anfitrion'])) {
+            $enrollment = CourseEnrollment::where('course_id', $course->id)
+                ->where('user_id', $user->id)
+                ->first();
+        }
+        
+        // Calcular progreso si está inscrito
+        $completedTopics = 0;
+        $currentTopic = null;
+        
+        if ($enrollment && $enrollment->status === 'inscrito') {
+            $completedTopics = $course->topics->filter(function ($topic) use ($user) {
+                return $topic->isCompletedByUser($user);
+            })->count();
+            
+            // Obtener tema actual si se especifica
+            if ($request->has('topic')) {
+                $currentTopic = $course->topics->find($request->get('topic'));
+            }
+        }
+        
+        return view('courses.show', compact('course', 'enrollment', 'completedTopics', 'currentTopic'));
+    }
+    
+    /**
+     * Mostrar contenido de un tema específico (AJAX)
+     */
+    public function showTopic(Course $course, CourseTopic $topic)
+    {
+        $user = Auth::user();
+        
+        // Verificar que el usuario esté inscrito
+        $enrollment = CourseEnrollment::where('course_id', $course->id)
+            ->where('user_id', $user->id)
+            ->where('status', 'inscrito')
+            ->first();
+            
+        if (!$enrollment) {
+            return response()->json(['error' => 'No estás inscrito en este curso'], 403);
+        }
+        
+        // Verificar que el tema pertenezca al curso
+        if ($topic->course_id !== $course->id) {
+            return response()->json(['error' => 'Tema no encontrado'], 404);
+        }
+        
+        // Cargar contenidos y actividades
+        $topic->load(['contents', 'activities']);
+        
+        return view('courses.partials.topic-content', compact('topic'))->render();
+    }
+    
+    /**
+     * Marcar tema como completado
+     */
+    public function completeTopic(CourseTopic $topic)
+    {
+        $user = Auth::user();
+        
+        // Verificar que el usuario esté inscrito en el curso
+        $enrollment = CourseEnrollment::where('course_id', $topic->course_id)
+            ->where('user_id', $user->id)
+            ->where('status', 'inscrito')
+            ->first();
+            
+        if (!$enrollment) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No estás inscrito en este curso.'
+            ], 403);
+        }
+        
+        try {
+            // Crear o actualizar progreso del tema
+            $progress = StudentTopicProgress::updateOrCreate(
+                [
+                    'user_id' => $user->id,
+                    'topic_id' => $topic->id,
+                ],
+                [
+                    'content_completed' => true,
+                    'activities_completed' => true, // Por ahora marcamos como completado
+                    'topic_score' => 100, // Puntuación por defecto
+                    'completed_at' => now(),
+                ]
+            );
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Tema marcado como completado exitosamente.'
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al marcar el tema como completado.'
+            ], 500);
+        }
+    }
+    
+    /**
      * Crear contenidos para un tema
      */
     private function createTopicContents(CourseTopic $topic, array $topicData)

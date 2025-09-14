@@ -171,31 +171,35 @@
                     
                     <!-- Botones de acción -->
                     <div style="display: flex; gap: 8px;">
+                        <button onclick="window.navigateTo('/courses/{{ $course->id }}')"
+                                style="flex: 1; background: #17a2b8; color: white; padding: 10px; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 14px;">
+                            Ver Curso
+                        </button>
+                        
                         @if(Auth::user()->hasAnyRole(['alumno', 'anfitrion']))
                             @if($isEnrolled)
-                                <button onclick="unenrollFromCourse({{ $course->id }})"
-                                        style="flex: 1; background: #dc3545; color: white; padding: 10px; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 14px;">
-                                    Desinscribirse
-                                </button>
+                                <div style="display: flex; gap: 4px; flex: 1;">
+                                    <button onclick="unenrollFromCourse({{ $course->id }})"
+                                            style="background: #dc3545; color: white; padding: 10px 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 12px;">
+                                        Salir
+                                    </button>
+                                </div>
                             @elseif($canEnroll)
-                                <button onclick="enrollInCourse({{ $course->id }})"
-                                        style="flex: 1; background: #28a745; color: white; padding: 10px; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 14px;">
-                                    Inscribirse
-                                </button>
+                                <div style="flex: 1;">
+                                    <button onclick="enrollInCourse({{ $course->id }})"
+                                            style="width: 100%; background: #28a745; color: white; padding: 10px; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 14px;">
+                                        Inscribirse
+                                    </button>
+                                </div>
                             @else
-                                <button disabled
-                                        style="flex: 1; background: #6c757d; color: white; padding: 10px; border: none; border-radius: 8px; cursor: not-allowed; font-weight: 500; font-size: 14px;"
-                                        title="{{ !empty($missingPrereqs) ? 'Faltan prerrequisitos' : ($course->is_full ? 'Curso lleno' : 'No disponible') }}">
-                                    {{ !empty($missingPrereqs) ? 'Prerrequisitos' : ($course->is_full ? 'Lleno' : 'No disponible') }}
-                                </button>
+                                <div style="flex: 1;">
+                                    <button disabled
+                                            style="width: 100%; background: #6c757d; color: white; padding: 10px; border: none; border-radius: 8px; cursor: not-allowed; font-weight: 500; font-size: 14px;"
+                                            title="{{ !empty($missingPrereqs) ? 'Faltan prerrequisitos' : ($course->is_full ? 'Curso lleno' : 'No disponible') }}">
+                                        {{ !empty($missingPrereqs) ? 'Prerrequisitos' : ($course->is_full ? 'Lleno' : 'No disponible') }}
+                                    </button>
+                                </div>
                             @endif
-                        @endif
-                        
-                        @if(Auth::user()->hasAnyRole(['admin', 'docente']))
-                            <button onclick="window.navigateTo('/courses/{{ $course->id }}/edit')"
-                                    style="background: #17a2b8; color: white; padding: 10px 16px; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 14px;">
-                                Editar
-                            </button>
                         @endif
                     </div>
                 </div>

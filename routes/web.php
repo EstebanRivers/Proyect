@@ -28,8 +28,11 @@ Route::middleware(['auth'])->group(function () {
     // Cursos - para profesores y estudiantes
     Route::middleware(['role:docente,alumno,admin'])->group(function () {
         Route::get('/cursos', [App\Http\Controllers\CourseController::class, 'index'])->name('courses.index');
+        Route::get('/courses/{course}', [App\Http\Controllers\CourseController::class, 'show'])->name('courses.show');
+        Route::get('/courses/{course}/topics/{topic}', [App\Http\Controllers\CourseController::class, 'showTopic'])->name('courses.topics.show');
         Route::post('/courses/{course}/enroll', [App\Http\Controllers\CourseController::class, 'enroll'])->name('courses.enroll');
         Route::post('/courses/{course}/unenroll', [App\Http\Controllers\CourseController::class, 'unenroll'])->name('courses.unenroll');
+        Route::post('/courses/topics/{topic}/complete', [App\Http\Controllers\CourseController::class, 'completeTopic'])->name('courses.topics.complete');
     });
     
     // Gestión de cursos - solo para admins y docentes
