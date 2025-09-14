@@ -27,9 +27,15 @@ Route::middleware(['auth'])->group(function () {
     
     // Cursos - para profesores y estudiantes
     Route::middleware(['role:docente,alumno,admin'])->group(function () {
-        Route::get('/cursos', function () { 
-            return view('courses.index'); 
-        })->name('courses.index');
+        Route::get('/cursos', [App\Http\Controllers\CourseController::class, 'index'])->name('courses.index');
+        Route::post('/courses/{course}/enroll', [App\Http\Controllers\CourseController::class, 'enroll'])->name('courses.enroll');
+        Route::post('/courses/{course}/unenroll', [App\Http\Controllers\CourseController::class, 'unenroll'])->name('courses.unenroll');
+    });
+    
+    // Gestión de cursos - solo para admins y docentes
+    Route::middleware(['role:admin,docente'])->group(function () {
+        Route::get('/cursos/crear', [App\Http\Controllers\CourseController::class, 'create'])->name('courses.create');
+        Route::post('/cursos', [App\Http\Controllers\CourseController::class, 'store'])->name('courses.store');
     });
     
     // Facturación - solo para roles específicos
