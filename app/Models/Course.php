@@ -16,7 +16,6 @@ class Course extends Model
         'title',
         'description',
         'short_description',
-        'code',
         'credits',
         'duration_hours',
         'difficulty',
@@ -26,14 +25,12 @@ class Course extends Model
         'min_students',
         'start_date',
         'end_date',
-        'price',
         'instructor_id',
     ];
 
     protected $casts = [
         'start_date' => 'date',
         'end_date' => 'date',
-        'price' => 'decimal:2',
     ];
 
     /**
@@ -42,6 +39,14 @@ class Course extends Model
     public function instructor(): BelongsTo
     {
         return $this->belongsTo(User::class, 'instructor_id');
+    }
+
+    /**
+     * Temas del curso
+     */
+    public function topics(): HasMany
+    {
+        return $this->hasMany(CourseTopic::class)->orderBy('order');
     }
 
     /**

@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('title');
             $table->text('description');
             $table->text('short_description')->nullable();
-            $table->string('code')->unique(); // Código único del curso
             $table->integer('credits')->default(0);
             $table->integer('duration_hours')->default(0);
             $table->enum('difficulty', ['basico', 'intermedio', 'avanzado'])->default('basico');
@@ -27,7 +26,6 @@ return new class extends Migration
             $table->integer('min_students')->default(5);
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
-            $table->decimal('price', 10, 2)->default(0);
             $table->foreignId('instructor_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });

@@ -67,7 +67,6 @@ class CourseController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'short_description' => 'nullable|string|max:500',
-            'code' => 'required|string|max:20|unique:courses,code',
             'credits' => 'required|integer|min:1|max:10',
             'duration_hours' => 'required|integer|min:1',
             'difficulty' => 'required|in:basico,intermedio,avanzado',
@@ -75,10 +74,12 @@ class CourseController extends Controller
             'min_students' => 'required|integer|min:1',
             'start_date' => 'nullable|date|after:today',
             'end_date' => 'nullable|date|after:start_date',
-            'price' => 'required|numeric|min:0',
             'instructor_id' => 'required|exists:users,id',
             'prerequisites' => 'nullable|array',
             'prerequisites.*' => 'exists:courses,id',
+            'topics' => 'required|array|min:1',
+            'topics.*.title' => 'required|string|max:255',
+            'topics.*.description' => 'nullable|string',
         ]);
 
         try {
@@ -89,6 +90,23 @@ class CourseController extends Controller
             // Asignar prerrequisitos
             if ($request->has('prerequisites')) {
                 $course->prerequisites()->attach($request->prerequisites);
+            }
+
+            // Crear temas del curso
+            if ($request->has('topics')) {
+                foreach ($request->topics as $index => $topicData) {
+                    $topic = $course->topics()->create([
+                        'title' => $topicData['title'],
+                        'description' => $topicData['description'] ?? null,
+                        'order' => $index + 1,
+                    ]);
+                    
+                    // Crear contenidos del tema
+                    $this->createTopicContents($topic, $topicData);
+                    
+                    // Crear actividades del tema
+                    $this->createTopicActivities($topic, $topicData);
+                }
             }
 
             DB::commit();
@@ -119,6 +137,148 @@ class CourseController extends Controller
         }
     }
 
+    /**
+     * Crear contenidos para un tema
+     */
+    private function createTopicContents(CourseTopic $topic, array $topicData)
+    {
+        $order = 1;
+        
+        // Videos
+        $videosCount = intval($topicData['videos_count'] ?? 0);
+        for ($i = 1; $i <= $videosCount; $i++) {
+            $topic->contents()->create([
+                'title' => "Video {$i} - {$topic->title}",
+                'description' => 'Video educativo del tema',
+                'type' => 'video',
+                'order' => $order++,
+                'duration_minutes' => 15, // Duración por defecto
+            ]);
+        }
+        
+        // Documentos
+        $documentsCount = intval($topicData['documents_count'] ?? 0);
+        for ($i = 1; $i <= $documentsCount; $i++) {
+            $topic->contents()->create([
+                'title' => "Documento {$i} - {$topic->title}",
+                'description' => 'Material de lectura del tema',
+                'type' => 'document',
+                'order' => $order++,
+                'duration_minutes' => 10,
+            ]);
+        }
+        
+        // Presentaciones
+        $presentationsCount = intval($topicData['presentations_count'] ?? 0);
+        for ($i = 1; $i <= $presentationsCount; $i++) {
+            $topic->contents()->create([
+                'title' => "Presentación {$i} - {$topic->title}",
+                'description' => 'Presentación del tema',
+                'type' => 'presentation',
+                'order' => $order++,
+                'duration_minutes' => 20,
+            ]);
+        }
+        
+        // Contenido de texto
+        if (intval($topicData['has_text_content'] ?? 0) === 1) {
+            $topic->contents()->create([
+                'title' => "Contenido - {$topic->title}",
+                'description' => 'Contenido textual del tema',
+                'type' => 'text',
+                'content' => 'Contenido del tema que será editado por el instructor.',
+                'order' => $order++,
+                'duration_minutes' => 5,
+            ]);
+        }
+    }
+    
+    /**
+     * Crear actividades para un tema
+     */
+    private function createTopicActivities(CourseTopic $topic, array $topicData)
+    {
+        // Cuestionarios de opción múltiple
+        $quizMultipleCount = intval($topicData['quiz_multiple_count'] ?? 0);
+        for ($i = 1; $i <= $quizMultipleCount; $i++) {
+            $topic->activities()->create([
+                'title' => "Cuestionario {$i} - {$topic->title}",
+                'description' => 'Cuestionario de opción múltiple',
+                'type' => 'quiz_multiple',
+                'content' => [
+                    'questions' => [
+                        [
+                            'question' => 'Pregunta de ejemplo',
+                            'options' => ['Opción A', 'Opción B', 'Opción C', 'Opción D'],
+                            'correct_answer' => 0
+                        ]
+                    ]
+                ],
+                'max_attempts' => 3,
+                'time_limit_minutes' => 30,
+                'max_score' => 100,
+            ]);
+        }
+        
+        // Cuestionarios abiertos
+        $quizOpenCount = intval($topicData['quiz_open_count'] ?? 0);
+        for ($i = 1; $i <= $quizOpenCount; $i++) {
+            $topic->activities()->create([
+                'title' => "Cuestionario Abierto {$i} - {$topic->title}",
+                'description' => 'Cuestionario de respuesta abierta',
+                'type' => 'quiz_open',
+                'content' => [
+                    'questions' => [
+                        [
+                            'question' => 'Pregunta abierta de ejemplo',
+                            'max_words' => 200
+                        ]
+                    ]
+                ],
+                'max_attempts' => 2,
+                'max_score' => 100,
+            ]);
+        }
+        
+        // Ensayos
+        $essayCount = intval($topicData['essay_count'] ?? 0);
+        for ($i = 1; $i <= $essayCount; $i++) {
+            $topic->activities()->create([
+                'title' => "Ensayo {$i} - {$topic->title}",
+                'description' => 'Ensayo sobre el tema',
+                'type' => 'essay',
+                'content' => [
+                    'prompt' => 'Escribe un ensayo sobre los conceptos aprendidos en este tema.',
+                    'min_words' => 500,
+                    'max_words' => 1500,
+                    'rubric' => [
+                        'content' => 40,
+                        'organization' => 30,
+                        'grammar' => 30
+                    ]
+                ],
+                'max_attempts' => 1,
+                'max_score' => 100,
+            ]);
+        }
+        
+        // Tareas/Asignaciones
+        $assignmentCount = intval($topicData['assignment_count'] ?? 0);
+        for ($i = 1; $i <= $assignmentCount; $i++) {
+            $topic->activities()->create([
+                'title' => "Tarea {$i} - {$topic->title}",
+                'description' => 'Tarea práctica del tema',
+                'type' => 'assignment',
+                'content' => [
+                    'instructions' => 'Instrucciones de la tarea que será editada por el instructor.',
+                    'deliverables' => ['Archivo de respuesta', 'Documentación'],
+                    'due_date' => null
+                ],
+                'max_attempts' => 1,
+                'max_score' => 100,
+            ]);
+        }
+    }
     /**
      * Inscribirse a un curso
      */

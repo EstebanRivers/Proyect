@@ -126,21 +126,17 @@
                     
                     <!-- Información del curso -->
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; font-size: 13px;">
-                        <div style="display: flex; align-items: center; gap: 6px; color: #666;">
-                            <span style="font-weight: 600;">👨‍🏫</span>
-                            {{ $course->instructor->name }}
+                        <div style="color: #666;">
+                            <strong>Instructor:</strong> {{ $course->instructor->name }}
                         </div>
-                        <div style="display: flex; align-items: center; gap: 6px; color: #666;">
-                            <span style="font-weight: 600;">⏱️</span>
-                            {{ $course->duration_hours }}h
+                        <div style="color: #666;">
+                            <strong>Duración:</strong> {{ $course->duration_hours }}h
                         </div>
-                        <div style="display: flex; align-items: center; gap: 6px; color: #666;">
-                            <span style="font-weight: 600;">🎓</span>
-                            {{ $course->credits }} créditos
+                        <div style="color: #666;">
+                            <strong>Créditos:</strong> {{ $course->credits }}
                         </div>
-                        <div style="display: flex; align-items: center; gap: 6px; color: #666;">
-                            <span style="font-weight: 600;">👥</span>
-                            {{ $course->enrolled_count }}/{{ $course->max_students }}
+                        <div style="color: #666;">
+                            <strong>Estudiantes:</strong> {{ $course->enrolled_count }}/{{ $course->max_students }}
                         </div>
                     </div>
                     
@@ -159,27 +155,19 @@
                                             ->exists();
                                     @endphp
                                     <span style="background: {{ $hasCompleted ? '#d4edda' : '#f8d7da' }}; color: {{ $hasCompleted ? '#155724' : '#721c24' }}; padding: 2px 8px; border-radius: 8px; font-size: 11px; font-weight: 500;">
-                                        {{ $hasCompleted ? '✓' : '✗' }} {{ $prereq->code }}
+                                        {{ $hasCompleted ? '✓' : '✗' }} {{ $prereq->title }}
                                     </span>
                                 @endforeach
                             </div>
                         </div>
                     @endif
                     
-                    <!-- Precio -->
-                    @if($course->price > 0)
-                        <div style="margin-bottom: 16px;">
-                            <span style="font-size: 20px; font-weight: 700; color: #e69a37;">
-                                ${{ number_format($course->price, 2) }}
-                            </span>
+                    <!-- Información adicional -->
+                    <div style="margin-bottom: 16px; padding: 12px; background: #f8f9fa; border-radius: 8px;">
+                        <div style="font-size: 12px; color: #666; text-align: center;">
+                            <strong>Curso Académico</strong> • {{ $course->topics->count() }} temas
                         </div>
-                    @else
-                        <div style="margin-bottom: 16px;">
-                            <span style="font-size: 16px; font-weight: 600; color: #28a745;">
-                                Gratuito
-                            </span>
-                        </div>
-                    @endif
+                    </div>
                     
                     <!-- Botones de acción -->
                     <div style="display: flex; gap: 8px;">
