@@ -48,7 +48,7 @@ class DatabaseSeeder extends Seeder
             'ciudad' => 'Acapulco de Juárez',
             'estado' => 'Guerrero',
         ]);
-        $teacher->assignRole('teacher');
+        $teacher->assignRole('docente');
 
         $student = User::factory()->create([
             'name' => 'Estudiante Demo',
@@ -60,6 +60,6 @@ class DatabaseSeeder extends Seeder
             'ciudad' => 'Acapulco de Juárez',
             'estado' => 'Guerrero',
         ]);
-        $student->assignRole('student');
+        $student->assignRole('alumno');
     }
 }

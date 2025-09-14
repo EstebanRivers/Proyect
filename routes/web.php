@@ -26,14 +26,14 @@ Route::middleware(['auth'])->group(function () {
     })->name('profile.index');
     
     // Cursos - para profesores y estudiantes
-    Route::middleware(['role:teacher,student,admin'])->group(function () {
+    Route::middleware(['role:docente,alumno,admin'])->group(function () {
         Route::get('/cursos', function () { 
             return view('courses.index'); 
         })->name('courses.index');
     });
     
     // Facturación - solo para roles específicos
-    Route::middleware(['role:billing,admin'])->group(function () {
+    Route::middleware(['role:alumno,admin'])->group(function () {
         Route::get('/facturacion', function () { 
             return view('billing.index'); 
         })->name('billing.index');

@@ -18,7 +18,7 @@
         </a>
       </li>
 
-      @if(Auth::user()->hasAnyRole(['teacher', 'student', 'admin']))
+      @if(Auth::user()->hasAnyRole(['docente', 'alumno', 'anfitrion', 'admin']))
       <li class="@if(request()->routeIs('courses.*')) active @endif">
         <a href="{{ route('courses.index') }}">
           <span class="icon" aria-hidden="true">
@@ -29,7 +29,7 @@
       </li>
       @endif
 
-      @if(Auth::user()->hasAnyRole(['student', 'admin']))
+      @if(Auth::user()->hasAnyRole(['alumno', 'admin']))
       <li class="@if(request()->routeIs('billing.*')) active @endif">
         <a href="{{ route('billing.index') }}">
           <span class="icon" aria-hidden="true">

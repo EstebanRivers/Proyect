@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Role;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class RoleSeeder extends Seeder
 {
@@ -19,19 +20,19 @@ class RoleSeeder extends Seeder
                 'description' => 'Acceso completo al sistema'
             ],
             [
-                'name' => 'teacher',
+                'name' => 'docente',
                 'display_name' => 'Profesor',
                 'description' => 'Puede gestionar cursos y estudiantes'
             ],
             [
-                'name' => 'student',
+                'name' => 'alumno',
                 'display_name' => 'Estudiante',
                 'description' => 'Acceso a cursos asignados'
             ],
             [
-                'name' => 'billing',
-                'display_name' => 'Facturación',
-                'description' => 'Acceso al módulo de facturación'
+                'name' => 'anfitrion',
+                'display_name' => 'Anfitrion',
+                'description' => 'Acceso al módulo de cursos'
             ]
         ];
 

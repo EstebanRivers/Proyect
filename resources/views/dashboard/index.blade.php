@@ -6,7 +6,7 @@
 <div class="simple-welcome-container">
   <div class="welcome-content">
     <div class="logo-container">
-      <img src="{{ asset('images/umi-logo.png') }}" alt="Universidad Mundo Imperial" class="welcome-logo">
+      <img src="{{ asset('images/uhta-logo.png') }}" alt="Universidad Mundo Imperial" class="welcome-logo">
     </div>
     <h1 class="welcome-message">
       @php
@@ -17,9 +17,9 @@
         // Personalizar saludo según el rol
         $greeting = match($primaryRole?->name) {
           'admin' => '¡Bienvenido Administrador',
-          'teacher' => '¡Bienvenido Maestro',
-          'student' => '¡Bienvenido Estudiante',
-          'billing' => '¡Bienvenido',
+          'docente' => '¡Bienvenido Maestro',
+          'alumno' => '¡Bienvenido Estudiante',
+          'anfitrion' => '¡Bienvenido Anfitrion',
           default => '¡Bienvenido'
         };
       @endphp
