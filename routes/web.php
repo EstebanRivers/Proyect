@@ -39,15 +39,8 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['role:admin,docente'])->group(function () {
         Route::get('/cursos/crear', [App\Http\Controllers\CourseController::class, 'create'])->name('courses.create');
         Route::post('/cursos', [App\Http\Controllers\CourseController::class, 'store'])->name('courses.store');
-    // Gestión de temas y contenido (TODO en CourseController)
-    Route::get('/cursos/{curso}/temas', [App\Http\Controllers\CourseController::class, 'manageTopics'])->name('courses.manage-topics');
-    Route::post('/cursos/{curso}/temas', [App\Http\Controllers\CourseController::class, 'storeTopic'])->name('courses.topics.store');
-    Route::get('/cursos/{curso}/contenido/crear', [App\Http\Controllers\CourseController::class, 'createContent'])->name('courses.content.create');
-    Route::post('/cursos/{curso}/contenido', [App\Http\Controllers\CourseController::class, 'storeContent'])->name('courses.content.store');
-    // Mantener builder por compatibilidad, pero redirige
-    Route::get('/cursos/{curso}/builder', [App\Http\Controllers\CourseController::class, 'builder'])->name('courses.builder');
     });
-
+    
     // Facturación - solo para roles específicos
     Route::middleware(['role:alumno,admin'])->group(function () {
         Route::get('/facturacion', function () { 

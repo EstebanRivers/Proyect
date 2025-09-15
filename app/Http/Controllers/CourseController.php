@@ -24,18 +24,18 @@ class CourseController extends Controller
         $user = Auth::user();
         
         // Obtener cursos activos ordenados por prerrequisitos
-        $courses = Course::with(['instructor:id,name', 'prerequisites', 'enrollments'])
+        $courses = Course::with(['instructor', 'prerequisites', 'enrollments'])
             ->where('status', 'activo')
             ->get()
-            ->sortBy(function ($curso) {
-                return $curso->prerequisites->count();
+            ->sortBy(function ($course) {
+                return $course->prerequisites->count();
             });
 
         // Obtener cursos del usuario si es estudiante o anfitrión
         $userCourses = [];
         if ($user->hasAnyRole(['alumno', 'anfitrion'])) {
             $userCourses = $user->enrollments()
-                ->with('curso')
+                ->with('course')
                 ->get()
                 ->keyBy('course_id');
         }
@@ -88,22 +88,27 @@ class CourseController extends Controller
         try {
             DB::beginTransaction();
 
-            $curso = Course::create($validated);
+            $course = Course::create($validated);
 
             // Asignar prerrequisitos
             if ($request->has('prerequisites')) {
-                $curso->prerequisites()->attach($request->prerequisites);
+                $course->prerequisites()->attach($request->prerequisites);
             }
 
             // Crear temas del curso
             if ($request->has('topics')) {
                 foreach ($request->topics as $index => $topicData) {
-                    $topic = $curso->topics()->create([
+                    $topic = $course->topics()->create([
                         'title' => $topicData['title'],
                         'description' => $topicData['description'] ?? null,
                         'order' => $index + 1,
                     ]);
                     
+                    // Crear contenidos del tema
+                    $this->createTopicContents($topic, $topicData);
+                    
+                    // Crear actividades del tema
+                    $this->createTopicActivities($topic, $topicData);
                 }
             }
 
@@ -113,11 +118,11 @@ class CourseController extends Controller
                 return response()->json([
                     'success' => true,
                     'message' => 'Curso creado exitosamente.',
-                    'redirect' => route('courses.builder', $curso)
+                    'redirect' => route('courses.index')
                 ]);
             }
 
-            return redirect()->route('courses.builder', $curso)
+            return redirect()->route('courses.index')
                            ->with('success', 'Curso creado exitosamente.');
 
         } catch (\Exception $e) {
@@ -136,118 +141,19 @@ class CourseController extends Controller
     }
 
     /**
- * Mostrar formulario para crear/editar temas
- */
-public function manageTopics(Course $curso)
-{
-    $this->authorize('update', $curso);
-
-    $topics = $curso->topics()->with(['contents', 'activities'])->orderBy('order')->get();
-
-    return view('courses.manage-topics', compact('curso', 'topics'));
-}
-
-/**
- * Crear nuevo tema
- */
-public function storeTopic(Request $request, Course $curso)
-{
-    $this->authorize('update', $curso);
-
-    $validated = $request->validate([
-        'title' => 'required|string|max:255',
-        'description' => 'nullable|string',
-        'order' => 'required|integer|min:1',
-    ]);
-
-    $topic = $curso->topics()->create($validated);
-
-    return response()->json([
-        'success' => true,
-        'message' => 'Tema creado exitosamente',
-        'topic' => $topic
-    ]);
-}
-
-/**
- * Mostrar formulario para añadir contenido
- */
-public function createContent(Course $curso, CourseTopic $topic = null)
-{
-    $this->authorize('update', $curso);
-    
-    $topics = $curso->topics()->get();
-    
-    return view('courses.create-content', compact('curso', 'topics', 'topic'));
-}
-
-/**
- * Guardar contenido
- */
-public function storeContent(Request $request, Course $curso)
-{
-    $this->authorize('update', $curso);
-
-    $validated = $request->validate([
-        'topic_id' => 'required|exists:course_topics,id,course_id,' . $curso->id,
-        'title' => 'required|string|max:255',
-        'type' => 'required|in:video,document,presentation,text',
-        'description' => 'nullable|string',
-        'content' => 'nullable|string',
-        'file' => 'nullable|file|mimes:mp4,avi,mov,pdf,doc,docx,txt,jpg,jpeg,png,ppt,pptx|max:10240',
-        'duration_minutes' => 'nullable|integer|min:1',
-        'order' => 'required|integer|min:0',
-    ]);
-
-    try {
-        $topic = CourseTopic::findOrFail($validated['topic_id']);
-
-        // Guardar archivo si existe
-        $filePath = null;
-        if ($request->hasFile('file')) {
-            $filePath = $request->file('file')->store('curso-contents', 'public');
-        }
-
-        $content = $topic->contents()->create([
-            'title' => $validated['title'],
-            'type' => $validated['type'],
-            'description' => $validated['description'],
-            'content' => $validated['content'],
-            'file_path' => $filePath,
-            'duration_minutes' => $validated['duration_minutes'] ?? null,
-            'order' => $validated['order'],
-        ]);
-
-        return redirect()->route('courses.manage-topics', $curso)
-                       ->with('success', 'Contenido agregado exitosamente.');
-
-    } catch (\Exception $e) {
-        return back()->withInput()
-                    ->withErrors(['error' => 'Error al guardar el contenido: ' . $e->getMessage()]);
-    }
-}
-
-    public function builder(Course $curso)
-    {
-        // Retornar la vista del builder (pestañas Temas / Actividades)
-        return redirect()->route('courses.manage-topics', $curso);
-    }
-
-
-    /**
      * Mostrar un curso específico
      */
-    public function show(Course $curso, Request $request)
+    public function show(Course $course, Request $request)
     {
         $user = Auth::user();
         
         // Cargar relaciones necesarias
-        $curso->load(['instructor', 'prerequisites', 'topics.contents', 'topics.activities']);
+        $course->load(['instructor', 'prerequisites', 'topics.contents', 'topics.activities']);
         
         // Verificar inscripción del usuario
         $enrollment = null;
         if ($user->hasAnyRole(['alumno', 'anfitrion'])) {
-            $enrollment = CourseEnrollment::where('course_id', $curso->id)
+            $enrollment = CourseEnrollment::where('course_id', $course->id)
                 ->where('user_id', $user->id)
                 ->first();
         }
@@ -257,28 +163,28 @@ public function storeContent(Request $request, Course $curso)
         $currentTopic = null;
         
         if ($enrollment && $enrollment->status === 'inscrito') {
-            $completedTopics = $curso->topics->filter(function ($topic) use ($user) {
+            $completedTopics = $course->topics->filter(function ($topic) use ($user) {
                 return $topic->isCompletedByUser($user);
             })->count();
             
             // Obtener tema actual si se especifica
             if ($request->has('topic')) {
-                $currentTopic = $curso->topics->find($request->get('topic'));
+                $currentTopic = $course->topics->find($request->get('topic'));
             }
         }
         
-        return view('courses.show', compact('curso', 'enrollment', 'completedTopics', 'currentTopic'));
+        return view('courses.show', compact('course', 'enrollment', 'completedTopics', 'currentTopic'));
     }
     
     /**
      * Mostrar contenido de un tema específico (AJAX)
      */
-    public function showTopic(Course $curso, CourseTopic $topic)
+    public function showTopic(Course $course, CourseTopic $topic)
     {
         $user = Auth::user();
         
         // Verificar que el usuario esté inscrito
-        $enrollment = CourseEnrollment::where('course_id', $curso->id)
+        $enrollment = CourseEnrollment::where('course_id', $course->id)
             ->where('user_id', $user->id)
             ->where('status', 'inscrito')
             ->first();
@@ -288,7 +194,7 @@ public function storeContent(Request $request, Course $curso)
         }
         
         // Verificar que el tema pertenezca al curso
-        if ($topic->course_id !== $curso->id) {
+        if ($topic->course_id !== $course->id) {
             return response()->json(['error' => 'Tema no encontrado'], 404);
         }
         
@@ -349,11 +255,149 @@ public function storeContent(Request $request, Course $curso)
     /**
      * Crear contenidos para un tema
      */
-
+    private function createTopicContents(CourseTopic $topic, array $topicData)
+    {
+        $order = 1;
+        
+        // Videos
+        $videosCount = intval($topicData['videos_count'] ?? 0);
+        for ($i = 1; $i <= $videosCount; $i++) {
+            $topic->contents()->create([
+                'title' => "Video {$i} - {$topic->title}",
+                'description' => 'Video educativo del tema',
+                'type' => 'video',
+                'order' => $order++,
+                'duration_minutes' => 15, // Duración por defecto
+            ]);
+        }
+        
+        // Documentos
+        $documentsCount = intval($topicData['documents_count'] ?? 0);
+        for ($i = 1; $i <= $documentsCount; $i++) {
+            $topic->contents()->create([
+                'title' => "Documento {$i} - {$topic->title}",
+                'description' => 'Material de lectura del tema',
+                'type' => 'document',
+                'order' => $order++,
+                'duration_minutes' => 10,
+            ]);
+        }
+        
+        // Presentaciones
+        $presentationsCount = intval($topicData['presentations_count'] ?? 0);
+        for ($i = 1; $i <= $presentationsCount; $i++) {
+            $topic->contents()->create([
+                'title' => "Presentación {$i} - {$topic->title}",
+                'description' => 'Presentación del tema',
+                'type' => 'presentation',
+                'order' => $order++,
+                'duration_minutes' => 20,
+            ]);
+        }
+        
+        // Contenido de texto
+        if (intval($topicData['has_text_content'] ?? 0) === 1) {
+            $topic->contents()->create([
+                'title' => "Contenido - {$topic->title}",
+                'description' => 'Contenido textual del tema',
+                'type' => 'text',
+                'content' => 'Contenido del tema que será editado por el instructor.',
+                'order' => $order++,
+                'duration_minutes' => 5,
+            ]);
+        }
+    }
+    
+    /**
+     * Crear actividades para un tema
+     */
+    private function createTopicActivities(CourseTopic $topic, array $topicData)
+    {
+        // Cuestionarios de opción múltiple
+        $quizMultipleCount = intval($topicData['quiz_multiple_count'] ?? 0);
+        for ($i = 1; $i <= $quizMultipleCount; $i++) {
+            $topic->activities()->create([
+                'title' => "Cuestionario {$i} - {$topic->title}",
+                'description' => 'Cuestionario de opción múltiple',
+                'type' => 'quiz_multiple',
+                'content' => [
+                    'questions' => [
+                        [
+                            'question' => 'Pregunta de ejemplo',
+                            'options' => ['Opción A', 'Opción B', 'Opción C', 'Opción D'],
+                            'correct_answer' => 0
+                        ]
+                    ]
+                ],
+                'max_attempts' => 3,
+                'time_limit_minutes' => 30,
+                'max_score' => 100,
+            ]);
+        }
+        
+        // Cuestionarios abiertos
+        $quizOpenCount = intval($topicData['quiz_open_count'] ?? 0);
+        for ($i = 1; $i <= $quizOpenCount; $i++) {
+            $topic->activities()->create([
+                'title' => "Cuestionario Abierto {$i} - {$topic->title}",
+                'description' => 'Cuestionario de respuesta abierta',
+                'type' => 'quiz_open',
+                'content' => [
+                    'questions' => [
+                        [
+                            'question' => 'Pregunta abierta de ejemplo',
+                            'max_words' => 200
+                        ]
+                    ]
+                ],
+                'max_attempts' => 2,
+                'max_score' => 100,
+            ]);
+        }
+        
+        // Ensayos
+        $essayCount = intval($topicData['essay_count'] ?? 0);
+        for ($i = 1; $i <= $essayCount; $i++) {
+            $topic->activities()->create([
+                'title' => "Ensayo {$i} - {$topic->title}",
+                'description' => 'Ensayo sobre el tema',
+                'type' => 'essay',
+                'content' => [
+                    'prompt' => 'Escribe un ensayo sobre los conceptos aprendidos en este tema.',
+                    'min_words' => 500,
+                    'max_words' => 1500,
+                    'rubric' => [
+                        'content' => 40,
+                        'organization' => 30,
+                        'grammar' => 30
+                    ]
+                ],
+                'max_attempts' => 1,
+                'max_score' => 100,
+            ]);
+        }
+        
+        // Tareas/Asignaciones
+        $assignmentCount = intval($topicData['assignment_count'] ?? 0);
+        for ($i = 1; $i <= $assignmentCount; $i++) {
+            $topic->activities()->create([
+                'title' => "Tarea {$i} - {$topic->title}",
+                'description' => 'Tarea práctica del tema',
+                'type' => 'assignment',
+                'content' => [
+                    'instructions' => 'Instrucciones de la tarea que será editada por el instructor.',
+                    'deliverables' => ['Archivo de respuesta', 'Documentación'],
+                    'due_date' => null
+                ],
+                'max_attempts' => 1,
+                'max_score' => 100,
+            ]);
+        }
+    }
     /**
      * Inscribirse a un curso
      */
-    public function enroll(Course $curso)
+    public function enroll(Course $course)
     {
         $user = Auth::user();
 
@@ -366,8 +410,8 @@ public function storeContent(Request $request, Course $curso)
         }
 
         // Verificar si puede inscribirse
-        if (!$curso->canUserEnroll($user)) {
-            $missingPrereqs = $curso->getMissingPrerequisites($user);
+        if (!$course->canUserEnroll($user)) {
+            $missingPrereqs = $course->getMissingPrerequisites($user);
             
             if (!empty($missingPrereqs)) {
                 $prereqNames = collect($missingPrereqs)->pluck('title')->join(', ');
@@ -377,7 +421,7 @@ public function storeContent(Request $request, Course $curso)
                 ], 400);
             }
 
-            if ($curso->is_full) {
+            if ($course->is_full) {
                 return response()->json([
                     'success' => false,
                     'message' => 'El curso ha alcanzado su capacidad máxima.'
@@ -392,7 +436,7 @@ public function storeContent(Request $request, Course $curso)
 
         try {
             CourseEnrollment::create([
-                'course_id' => $curso->id,
+                'course_id' => $course->id,
                 'user_id' => $user->id,
                 'status' => 'inscrito',
                 'enrolled_at' => now(),
@@ -414,11 +458,11 @@ public function storeContent(Request $request, Course $curso)
     /**
      * Desinscribirse de un curso
      */
-    public function unenroll(Course $curso)
+    public function unenroll(Course $course)
     {
         $user = Auth::user();
 
-        $enrollment = CourseEnrollment::where('course_id', $curso->id)
+        $enrollment = CourseEnrollment::where('course_id', $course->id)
             ->where('user_id', $user->id)
             ->where('status', 'inscrito')
             ->first();

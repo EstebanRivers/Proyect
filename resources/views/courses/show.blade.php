@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $curso->title . ' - UHTA')
+@section('title', $course->title . ' - UHTA')
 
 @section('content')
 <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
@@ -10,7 +10,7 @@
             <div style="flex: 1;">
                 <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
                     <span style="background: #e69a37; color: white; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; text-transform: uppercase;">
-                        {{ $curso->difficulty }}
+                        {{ $course->difficulty }}
                     </span>
                     @if($enrollment)
                         @if($enrollment->status === 'completado')
@@ -26,29 +26,29 @@
                 </div>
                 
                 <h1 style="margin: 0 0 12px 0; color: #333; font-size: 32px; font-weight: 600; line-height: 1.2;">
-                    {{ $curso->title }}
+                    {{ $course->title }}
                 </h1>
                 
                 <p style="margin: 0 0 20px 0; color: #666; font-size: 16px; line-height: 1.5;">
-                    {{ $curso->description }}
+                    {{ $course->description }}
                 </p>
                 
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; margin-bottom: 20px;">
                     <div>
                         <div style="color: #666; font-size: 14px; margin-bottom: 4px;">Instructor</div>
-                        <div style="color: #333; font-weight: 600;">{{ $curso->instructor->name }}</div>
+                        <div style="color: #333; font-weight: 600;">{{ $course->instructor->name }}</div>
                     </div>
                     <div>
                         <div style="color: #666; font-size: 14px; margin-bottom: 4px;">Duración</div>
-                        <div style="color: #333; font-weight: 600;">{{ $curso->duration_hours }} horas</div>
+                        <div style="color: #333; font-weight: 600;">{{ $course->duration_hours }} horas</div>
                     </div>
                     <div>
                         <div style="color: #666; font-size: 14px; margin-bottom: 4px;">Créditos</div>
-                        <div style="color: #333; font-weight: 600;">{{ $curso->credits }}</div>
+                        <div style="color: #333; font-weight: 600;">{{ $course->credits }}</div>
                     </div>
                     <div>
                         <div style="color: #666; font-size: 14px; margin-bottom: 4px;">Temas</div>
-                        <div style="color: #333; font-weight: 600;">{{ $curso->topics->count() }}</div>
+                        <div style="color: #333; font-weight: 600;">{{ $course->topics->count() }}</div>
                     </div>
                 </div>
                 
@@ -56,10 +56,10 @@
                     <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                             <span style="font-weight: 600; color: #333;">Progreso del Curso</span>
-                            <span style="color: #666; font-size: 14px;">{{ $completedTopics }}/{{ $curso->topics->count() }} temas</span>
+                            <span style="color: #666; font-size: 14px;">{{ $completedTopics }}/{{ $course->topics->count() }} temas</span>
                         </div>
                         <div style="background: #e9ecef; height: 8px; border-radius: 4px; overflow: hidden;">
-                            <div style="background: #e69a37; height: 100%; width: {{ $curso->topics->count() > 0 ? ($completedTopics / $curso->topics->count()) * 100 : 0 }}%; transition: width 0.3s ease;"></div>
+                            <div style="background: #e69a37; height: 100%; width: {{ $course->topics->count() > 0 ? ($completedTopics / $course->topics->count()) * 100 : 0 }}%; transition: width 0.3s ease;"></div>
                         </div>
                     </div>
                 @endif
@@ -67,8 +67,8 @@
             
             <div style="margin-left: 30px;">
                 @if(!$enrollment && Auth::user()->hasAnyRole(['alumno', 'anfitrion']))
-                    @if($curso->canUserEnroll(Auth::user()))
-                        <button onclick="enrollIncurso$curso({{ $curso->id }})"
+                    @if($course->canUserEnroll(Auth::user()))
+                        <button onclick="enrollInCourse({{ $course->id }})"
                                 style="background: #28a745; color: white; padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 16px;">
                             Inscribirse al Curso
                         </button>
@@ -80,7 +80,7 @@
                     @endif
                 @endif
                 
-                <button onclick="window.navigateTo('{{ route('curso$cursos.index') }}')"
+                <button onclick="window.navigateTo('{{ route('courses.index') }}')"
                         style="background: #6c757d; color: white; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; margin-top: 10px; display: block; width: 100%;">
                     ← Volver a Cursos
                 </button>
@@ -88,14 +88,14 @@
         </div>
         
         <!-- Prerrequisitos -->
-        @if($curso->prerequisites->count() > 0)
+        @if($course->prerequisites->count() > 0)
             <div style="border-top: 1px solid #eee; padding-top: 20px;">
                 <h4 style="margin: 0 0 12px 0; color: #333; font-size: 16px;">Prerrequisitos</h4>
                 <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-                    @foreach($curso->prerequisites as $prereq)
+                    @foreach($course->prerequisites as $prereq)
                         @php
                             $hasCompleted = Auth::user()->enrollments()
-                                ->where('curso$curso_id', $prereq->id)
+                                ->where('course_id', $prereq->id)
                                 ->where('status', 'completado')
                                 ->exists();
                         @endphp
@@ -116,7 +116,7 @@
                 <h3 style="margin: 0 0 20px 0; color: #333; font-size: 18px; font-weight: 600;">Contenido del Curso</h3>
                 
                 <div style="space-y: 8px;">
-                    @foreach($curso->topics as $index => $topic)
+                    @foreach($course->topics as $index => $topic)
                         @php
                             $isCompleted = $topic->isCompletedByUser(Auth::user());
                             $isActive = $currentTopic && $currentTopic->id === $topic->id;
@@ -144,7 +144,7 @@
             <!-- Contenido principal -->
             <div id="topic-content">
                 @if($currentTopic)
-                    @include('curso$cursos.partials.topic-content', ['topic' => $currentTopic])
+                    @include('courses.partials.topic-content', ['topic' => $currentTopic])
                 @else
                     <div style="background: white; border-radius: 16px; padding: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); text-align: center;">
                         <div style="font-size: 48px; margin-bottom: 20px;">📚</div>
@@ -160,7 +160,7 @@
             <h3 style="margin: 0 0 20px 0; color: #333; font-size: 24px;">Temario del Curso</h3>
             
             <div style="space-y: 16px;">
-                @foreach($curso->topics as $index => $topic)
+                @foreach($course->topics as $index => $topic)
                     <div style="border: 1px solid #eee; border-radius: 12px; padding: 20px;">
                         <div style="display: flex; align-items: flex-start; gap: 16px;">
                             <div style="width: 40px; height: 40px; border-radius: 50%; background: #e69a37; color: white; display: flex; align-items: center; justify-content: center; font-weight: 600; flex-shrink: 0;">
@@ -201,7 +201,7 @@
 
 <script>
 function loadTopic(topicId) {
-    fetch(`/curso$cursos/{{ $curso->id }}/topics/${topicId}`, {
+    fetch(`/courses/{{ $course->id }}/topics/${topicId}`, {
         method: 'GET',
         headers: {
             'X-Requested-With': 'XMLHttpRequest',
@@ -213,7 +213,7 @@ function loadTopic(topicId) {
         document.getElementById('topic-content').innerHTML = html;
         
         // Actualizar URL sin recargar la página
-        const newUrl = `/curso$cursos/{{ $curso->id }}?topic=${topicId}`;
+        const newUrl = `/courses/{{ $course->id }}?topic=${topicId}`;
         window.history.pushState({}, '', newUrl);
         
         // Actualizar navegación activa
@@ -240,12 +240,12 @@ function updateActiveNavigation(activeTopicId) {
     }
 }
 
-function enrollIncurso$curso(curso$cursoId) {
+function enrollInCourse(courseId) {
     if (!confirm('¿Estás seguro de que quieres inscribirte a este curso?')) {
         return;
     }
     
-    fetch(`/curso$cursos/${curso$cursoId}/enroll`, {
+    fetch(`/courses/${courseId}/enroll`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -271,17 +271,17 @@ function enrollIncurso$curso(curso$cursoId) {
 
 <style>
 @media (max-width: 768px) {
-    .curso$curso-grid {
+    .course-grid {
         grid-template-columns: 1fr !important;
         gap: 20px !important;
     }
     
-    .curso$curso-header {
+    .course-header {
         flex-direction: column !important;
         text-align: center !important;
     }
     
-    .curso$curso-header > div:last-child {
+    .course-header > div:last-child {
         margin-left: 0 !important;
         margin-top: 20px !important;
     }

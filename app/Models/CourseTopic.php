@@ -70,5 +70,8 @@ class CourseTopic extends Model
     /**
      * Obtener duración total estimada del tema
      */
-
+    public function getTotalDurationAttribute(): int
+    {
+        return $this->contents->sum('duration_minutes') ?? 0;
+    }
 }

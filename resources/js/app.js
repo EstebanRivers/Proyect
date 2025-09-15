@@ -70,13 +70,6 @@ class SimpleSPANavigation {
     }
 
     shouldIntercept(link) {
-         // EXCLUIR formularios y botones de submit
-        if (link.closest('form') || 
-            link.tagName === 'BUTTON' || 
-            link.hasAttribute('type') && link.getAttribute('type') === 'submit') {
-            return false;
-        }
-        
         return link.hostname === window.location.hostname && 
                !link.hasAttribute('data-no-intercept') &&
                !link.href.includes('logout') &&
