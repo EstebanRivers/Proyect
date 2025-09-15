@@ -27,20 +27,20 @@ class CourseSeeder extends Seeder
                     $query->whereIn('name', ['docente', 'admin']);
                 })->first();
 
-if (!$instructor) {
-    $this->command->warn('No hay instructores disponibles. Creando uno por defecto.');
+        if (!$instructor) {
+            $this->command->warn('No hay instructores disponibles. Creando uno por defecto.');
 
-    $instructor = User::create([
-        'name' => 'Instructor Genérico',
-        'email' => 'instructor@example.com',
-        'password' => bcrypt('password'), // o el hash que uses
-    ]);
+            $instructor = User::create([
+                'name' => 'Instructor Genérico',
+                'email' => 'instructor@example.com',
+                'password' => bcrypt('password'), // o el hash que uses
+            ]);
 
-    // Asignar rol por defecto
-    $instructor->roles()->attach(
-        Role::where('name', 'docente')->first()->id
-    );
-}
+            // Asignar rol por defecto
+            $instructor->roles()->attach(
+                Role::where('name', 'docente')->first()->id
+            );
+        }
 
 
         // Cursos básicos (sin prerrequisitos)
