@@ -19,8 +19,8 @@
       </li>
 
       @if(Auth::user()->hasAnyRole(['docente', 'alumno', 'anfitrion', 'admin']))
-      <li class="@if(request()->routeIs('courses.*')) active @endif">
-        <a href="{{ route('courses.index') }}">
+      <li class="@if(request()->routeIs('curso.*')) active @endif">
+        <a href="{{ route('curso.index') }}">
           <span class="icon" aria-hidden="true">
             <img src="{{ asset('icons/desktop-solid-full.svg') }}" alt="" style="width:24px;height:24px" loading="lazy">
           </span>
