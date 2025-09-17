@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Curso extends Model
+class Course extends Model
 {
     use HasFactory;
 
-    protected $table = 'cursos';
+    protected $table = 'courses';
 
     protected $fillable = [
         'title',
@@ -27,8 +27,8 @@ class Curso extends Model
         return $this->belongsTo(User::class, 'instructor_id');
     }
 
-    public function temas(): HasMany
+    public function topics(): HasMany
     {
-        return $this->hasMany(Temas::class, 'curso_id');
+        return $this->hasMany(Topics::class, 'curso_id');
     }
 }

@@ -7,7 +7,7 @@
     <h1 style="color: #333; margin-bottom: 30px; font-size: 28px;">Crear Nuevo Curso</h1>
 
     {{-- Formulario para crear el curso --}}
-    <form action="{{ route('curso.store') }}" method="POST">
+    <form action="{{ route('courses.store') }}" method="POST">
         @csrf {{-- Token de seguridad de Laravel --}}
 
         {{-- Título del Curso --}}
@@ -43,8 +43,8 @@
             <label for="prerequisites" style="display: block; margin-bottom: 8px; font-weight: 600;">Prerrequisitos (opcional)</label>
             <select id="prerequisites" name="prerequisites[]" multiple
                     style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; min-height: 120px;">
-                @foreach ($cursos as $curso)
-                    <option value="{{ $curso->id }}">{{ $curso->title }}</option>
+                @foreach ($courses as $course)
+                    <option value="{{ $course->id }}">{{ $course->title }}</option>
                 @endforeach
             </select>
             <small style="color: #666;">Mantén presionada la tecla Ctrl (o Cmd en Mac) para seleccionar varios cursos.</small>

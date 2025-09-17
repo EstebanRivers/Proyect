@@ -3,20 +3,20 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Curso;
-use App\Models\Temas;
+use App\Models\Course;
+use App\Models\Topics;
 use Illuminate\Http\RedirectResponse;  
 use Illuminate\View\View;
 
-class TemasController extends Controller
+class TopicsController extends Controller
 {
     /**
      * Mostrar formulario de creación de temas para un curso específico
      */
-    public function create(Curso $curso): View
+    public function create(Course $course): View
     {
-        $curso->load('temas.actividades');
-        return view('temas.create', ['curso' => $curso]);
+        $course->load('topics.activities');
+        return view('topics.create', ['course' => $course]);
     }
 
     /**
@@ -30,7 +30,7 @@ class TemasController extends Controller
             'description' => 'nullable|string',
         ]);
 
-        Temas::create($validatedData);
+        Topics::create($validatedData);
 
         return back()->with('success', 'Tema creado exitosamente.');
     }

@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Curso;
+use App\Models\Course;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use App\Models\Role;
@@ -87,7 +87,7 @@ if (!$instructor) {
         ];
 
         foreach ($basicCourses as $courseData) {
-            Curso::create($courseData);
+            Course::create($courseData);
         }
 
         // Cursos intermedios (con prerrequisitos básicos)
@@ -140,11 +140,11 @@ if (!$instructor) {
             $prerequisites = $courseData['prerequisites'] ?? [];
             unset($courseData['prerequisites']);
             
-            $course = Curso::create($courseData);
+            $course = Course::create($courseData);
             
             // Asignar prerrequisitos
             if (!empty($prerequisites)) {
-                $prereqIds = Curso::whereIn('code', $prerequisites)->pluck('id');
+                $prereqIds = Course::whereIn('code', $prerequisites)->pluck('id');
                 $course->prerequisites()->attach($prereqIds);
             }
         }
@@ -199,11 +199,11 @@ if (!$instructor) {
             $prerequisites = $courseData['prerequisites'] ?? [];
             unset($courseData['prerequisites']);
             
-            $course = Curso::create($courseData);
+            $course = Course::create($courseData);
             
             // Asignar prerrequisitos
             if (!empty($prerequisites)) {
-                $prereqIds = Curso::whereIn('code', $prerequisites)->pluck('id');
+                $prereqIds = Course::whereIn('code', $prerequisites)->pluck('id');
                 $course->prerequisites()->attach($prereqIds);
             }
         }

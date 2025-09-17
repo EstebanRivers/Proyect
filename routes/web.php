@@ -3,9 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\CursoController;
-use App\Http\Controllers\TemasController;
-use App\Http\Controllers\ActividadesController;
+use App\Http\Controllers\CourseController;
+use App\Http\Controllers\TopicsController;
+use App\Http\Controllers\ActivitiesController;
 
 // Rutas de autenticación
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -31,15 +31,17 @@ Route::middleware(['auth'])->group(function () {
     
     // Cursos - para anfitriones y estudiantes
     Route::middleware(['role:docente,alumno,admin,anfitrion'])->group(function () {
-        Route::get('/cursos', [CursoController::class, 'index'])->name('curso.index');
+        Route::get('/cursos', [CourseController::class, 'index'])->name('courses.index');
     });
     
     // Gestión de cursos - solo para admins y docentes
     Route::middleware(['role:admin,docente'])->group(function () {
-        Route::get('/cursos/crear', [CursoController::class, 'create'])->name('curso.create');
-        Route::post('/cursos', [CursoController::class, 'store'])->name('curso.store');
-        Route::post('/temas', [TemasController::class, 'store'])->name('temas.store');
-        Route::get('/actividades', [ActividadesController::class, 'store'])->name('actividades.create');
+        Route::get('/cursos/crear', [CourseController::class, 'create'])->name('courses.create');
+        Route::post('/cursos', [CourseController::class, 'store'])->name('courses.store');
+        Route::get('/cursos/{course}/temas/crear', [TopicsController::class, 'create'])->name('courses.topics.create'); // <--- AÑADIDO Y CORREGIDO
+
+        Route::post('/temas', [TopicsController::class, 'store'])->name('topics.store');
+        Route::get('/actividades', [ActivitiesController::class, 'store'])->name('activities.create');
     });
     
     // Facturación - solo para roles específicos

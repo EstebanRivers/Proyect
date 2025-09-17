@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Actividades;
+use App\Models\Activities;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 
-class ActividadesController extends Controller
+class ActivitiesController extends Controller
 {
     public function store(Request $request): RedirectResponse
     {
@@ -16,8 +16,8 @@ class ActividadesController extends Controller
             'type' => 'required|string|max:100',
         ]);
 
-        $validated['content'] = 'contenido pendiente';
-        Actividades::create($validatedData);
+        $validatedData['content'] = 'contenido pendiente';
+        Activities::create($validatedData);
 
 
         return back()->with('success', 'Actividad creada exitosamente.');

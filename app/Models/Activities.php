@@ -6,7 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Actividades extends Model
+
+class Activities extends Model
 {
     use HasFactory;
 
@@ -21,8 +22,8 @@ class Actividades extends Model
     /**
      * Tema al que pertenece la actividad
      */
-    public function tema(): BelongsTo
+    public function topic(): BelongsTo
     {
-        return $this->belongsTo(Temas::class, 'tema_id');
+        return $this->belongsTo(Topics::class, 'tema_id');
     }
 }

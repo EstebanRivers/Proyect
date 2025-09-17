@@ -4,19 +4,19 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
-use App\Models\Curso;
+use App\Models\Course;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Auth;
 
-class CursoController extends Controller
+class CourseController extends Controller
 {
     /**
      * Muestrar lista de cursos
      */
     public function index(): View
     {
-        $cursos = Curso::all();
-        return view('cursos.index', compact('cursos'));
+        $courses = Course::all();
+        return view('courses.index', compact('courses'));
     }
 
     /**
@@ -24,8 +24,8 @@ class CursoController extends Controller
      */
     public function create(): View
     {
-        $cursos = Curso::all();
-        return view('cursos.create', compact('cursos'));
+        $courses = Course::all();
+        return view('courses.create', compact('courses'));
     }
 
     /**
@@ -44,22 +44,22 @@ class CursoController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $cursoData = $validatedData;
+        $courseData = $validatedData;
 
-        $cursoData['instructor_id'] = Auth::id();
+        $courseData['instructor_id'] = Auth::id();
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('public/cursos');
-            $cursoData['image'] = $path;
+            $courseData['image'] = $path;
         }
 
 
         if (!empty($validatedData['prerequisites'])) {
-            $cursoData['prerequisites'] = json_encode($validatedData['prerequisites']);
+            $courseData['prerequisites'] = json_encode($validatedData['prerequisites']);
         }
 
-        $cursos = Curso::create($cursoData);
+        $courses = Course::create($courseData);
 
-        return redirect()->route('cursos.temas.create', ['curso' => $cursos->id])->with('success', 'Curso creado exitosamente.');
+        return redirect()->route('courses.topics.create', ['curso' => $courses->id])->with('success', 'Curso creado exitosamente.');
     }
 
     /**

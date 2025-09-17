@@ -18,7 +18,7 @@
         </div>
         
         @if(Auth::user()->hasAnyRole(['admin', 'docente']))
-            <button onclick="window.navigateTo('{{ route('curso.create') }}')" 
+            <button onclick="window.navigateTo('{{ route('courses.create') }}')" 
                     style="background: #e69a37; color: white; padding: 14px 28px; border: none; border-radius: 12px; cursor: pointer; font-weight: 600; font-size: 16px; box-shadow: 0 4px 12px rgba(230, 154, 55, 0.3); transition: all 0.2s ease;">
                 + Crear Curso
             </button>
@@ -57,15 +57,15 @@
 
     <!-- Grid de cursos -->
 <div class="courses-container">
-    @forelse ($cursos as $curso)
+    @forelse ($courses as $course)
         <div class="course-card">
-            <img src="{{ $curso->image_path ?? 'path/to/default/image.jpg' }}" alt="Imagen del curso">
+            <img src="{{ $course->image_path ?? 'path/to/default/image.jpg' }}" alt="Imagen del curso">
             <div class="course-info">
-                <h3 class="course-title">{{ $curso->title }}</h3>
-                <p class="course-description">{{ $curso->description }}</p>
+                <h3 class="course-title">{{ $course->title }}</h3>
+                <p class="course-description">{{ $course->description }}</p>
                 <div class="course-meta">
-                    <span>Créditos: {{ $curso->credits }}</span>
-                    <span>Horas: {{ $curso->hours }}</span>
+                    <span>Créditos: {{ $course->credits }}</span>
+                    <span>Horas: {{ $course->hours }}</span>
                 </div>
                 <a href="#" class="course-link">Ver Curso</a>
             </div>

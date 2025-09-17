@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Añadir Temas a ' . $curso->title)
+@section('title', 'Añadir Temas a ' . $course->title)
 
 @section('content')
 <div style="max-width: 900px; margin: 0 auto; padding: 20px;">
@@ -15,9 +15,9 @@
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
         <div>
             <h1 style="color: #333; margin-bottom: 0;">Añadir Temas y Actividades</h1>
-            <h2 style="color: #e69a37; margin-top: 5px; font-weight: 500;">Curso: {{ $curso->title }}</h2>
+            <h2 style="color: #e69a37; margin-top: 5px; font-weight: 500;">Curso: {{ $course->title }}</h2>
         </div>
-        <a href="{{ route('cursos.index') }}" 
+        <a href="{{ route('courses.index') }}" 
            style="background: #6c757d; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600;">
             Finalizar
         </a>
@@ -29,7 +29,7 @@
             <h3 style="margin-top: 0; color: #333;">Añadir Nuevo Tema</h3>
             <form action="{{ route('temas.store') }}" method="POST">
                 @csrf
-                <input type="hidden" name="curso_id" value="{{ $curso->id }}">
+                <input type="hidden" name="curso_id" value="{{ $course->id }}">
 
                 <div style="margin-bottom: 15px;">
                     <label for="title" style="display: block; margin-bottom: 5px; font-weight: 600;">Título del Tema</label>
@@ -52,9 +52,9 @@
 
         {{-- Columna para listar los temas existentes --}}
         <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
-            <h3 style="margin-top: 0; color: #333;">Temas del Curso ({{ $curso->topics->count() }})</h3>
+            <h3 style="margin-top: 0; color: #333;">Temas del Curso ({{ $course->topics->count() }})</h3>
             
-            @forelse ($curso->topics as $topic)
+            @forelse ($course->topics as $topic)
                 <div style="background: #f8f9fa; border-radius: 8px; padding: 15px; margin-bottom: 15px;">
                     {{-- Título del Tema --}}
                     <h4 style="margin: 0 0 10px 0;">{{ $topic->title }}</h4>
@@ -74,7 +74,7 @@
                     </div>
 
                     {{-- Formulario para Añadir Nueva Actividad --}}
-                    <form action="{{ route('actividades.store') }}" method="POST"> {{-- La acción la definiremos en el siguiente paso --}}
+                    <form action="{{ route('activities.store') }}" method="POST"> {{-- La acción la definiremos en el siguiente paso --}}
                         @csrf
                         <input type="hidden" name="topic_id" value="{{ $topic->id }}">
                         <div style="display: flex; gap: 10px; align-items: center;">

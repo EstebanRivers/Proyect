@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Temas extends Model
+class Topics extends Model
 {
     use HasFactory;
 
@@ -20,16 +20,16 @@ class Temas extends Model
     /**
      * Curso al que pertenece el tema
      */
-    public function curso(): BelongsTo
+    public function course(): BelongsTo
     {
-        return $this->belongsTo(Curso::class ,'curso_id');
+        return $this->belongsTo(Course::class ,'curso_id');
     }
 
     /**
      * Actividades del tema
      */
-    public function actividades(): HasMany
+    public function activities(): HasMany
     {
-        return $this->hasMany(Actividades::class, 'tema_id');
+        return $this->hasMany(Activities::class, 'tema_id');
     }
 }
