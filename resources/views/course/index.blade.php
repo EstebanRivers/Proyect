@@ -2,13 +2,16 @@
 
 @section('title', 'Cursos - UHTA')
 
+@vite(['resources/css/courses.css', 'resources/js/app.js'])
+
+
 @section('content')
-<div style="max-width: 1400px; margin: 0 auto; padding: 0 20px;">
+<div class="courses-wrapper">
     <!-- Header -->
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
+    <div class="courses-header">
         <div>
-            <h1 style="color: #333; margin: 0 0 8px 0; font-size: 32px; font-weight: 600;">Cursos Disponibles</h1>
-            <p style="color: #666; margin: 0; font-size: 16px;">
+            <h1 class="courses-title">Cursos Disponibles</h1>
+            <p class="courses-subtitle">
                 @if(Auth::user()->hasAnyRole(['admin', 'docente']))
                     Gestiona y crea cursos para los estudiantes
                 @else
@@ -18,103 +21,57 @@
         </div>
         
         @if(Auth::user()->hasAnyRole(['admin', 'docente']))
-            <button onclick="window.navigateTo('{{ route('courses.create') }}')" 
-                    style="background: #e69a37; color: white; padding: 14px 28px; border: none; border-radius: 12px; cursor: pointer; font-weight: 600; font-size: 16px; box-shadow: 0 4px 12px rgba(230, 154, 55, 0.3); transition: all 0.2s ease;">
+            <button onclick="window.navigateTo('{{ route('courses.create') }}')" class="btn-create">
                 + Crear Curso
             </button>
         @endif
     </div>
 
     <!-- Filtros rápidos -->
-    <div style="display: flex; gap: 12px; margin-bottom: 30px; flex-wrap: wrap;">
-        <button class="filter-btn active" data-filter="all" 
-                style="padding: 8px 16px; border: 2px solid #e69a37; background: #e69a37; color: white; border-radius: 20px; cursor: pointer; font-size: 14px; font-weight: 500; transition: all 0.2s ease;">
-            Todos
-        </button>
-        <button class="filter-btn" data-filter="basico"
-                style="padding: 8px 16px; border: 2px solid #e69a37; background: transparent; color: #e69a37; border-radius: 20px; cursor: pointer; font-size: 14px; font-weight: 500; transition: all 0.2s ease;">
-            Básico
-        </button>
-        <button class="filter-btn" data-filter="intermedio"
-                style="padding: 8px 16px; border: 2px solid #e69a37; background: transparent; color: #e69a37; border-radius: 20px; cursor: pointer; font-size: 14px; font-weight: 500; transition: all 0.2s ease;">
-            Intermedio
-        </button>
-        <button class="filter-btn" data-filter="avanzado"
-                style="padding: 8px 16px; border: 2px solid #e69a37; background: transparent; color: #e69a37; border-radius: 20px; cursor: pointer; font-size: 14px; font-weight: 500; transition: all 0.2s ease;">
-            Avanzado
-        </button>
+    <div class="courses-filters">
+        <button class="filter-btn active" data-filter="all">Todos</button>
+        <button class="filter-btn" data-filter="basico">Básico</button>
+        <button class="filter-btn" data-filter="intermedio">Intermedio</button>
+        <button class="filter-btn" data-filter="avanzado">Avanzado</button>
         @if(Auth::user()->hasAnyRole(['alumno', 'anfitrion']))
-        <button class="filter-btn" data-filter="available"
-                style="padding: 8px 16px; border: 2px solid #28a745; background: transparent; color: #28a745; border-radius: 20px; cursor: pointer; font-size: 14px; font-weight: 500; transition: all 0.2s ease;">
-            Disponibles para mí
-        </button>
-        <button class="filter-btn" data-filter="enrolled"
-                style="padding: 8px 16px; border: 2px solid #17a2b8; background: transparent; color: #17a2b8; border-radius: 20px; cursor: pointer; font-size: 14px; font-weight: 500; transition: all 0.2s ease;">
-            Mis Cursos
-        </button>
+            <button class="filter-btn available" data-filter="available">Disponibles para mí</button>
+            <button class="filter-btn enrolled" data-filter="enrolled">Mis Cursos</button>
         @endif
     </div>
 
     <!-- Grid de cursos -->
-<div class="courses-container">
-    @forelse ($course as $courses)
-        <div class="course-card">
-            <img src="{{ $courses->image_path ?? 'path/to/default/image.jpg' }}" alt="Imagen del curso">
-            <div class="course-info">
-                <h3 class="course-title">{{ $courses->title }}</h3>
-                <p class="course-description">{{ $courses->description }}</p>
-                <div class="course-meta">
-                    <span>Créditos: {{ $courses->credits }}</span>
-                    <span>Horas: {{ $courses->hours }}</span>
-                </div>
-                <a href="#" class="course-link">Ver Curso</a>
-                <a href="" {{-- La ruta la definiremos pronto --}}
-                    style="background: #ffc107; color: white; padding: 10px; border-radius: 8px; text-decoration: none; font-weight: 500; font-size: 14px;">
-                    Editar
-                </a>
+    <div class="courses-container">
+        @forelse ($course as $courses)
+            <div class="course-card">
+                <img src="{{ $courses->image_path ?? 'path/to/default/image.jpg' }}" alt="Imagen del curso">
+                <div class="course-info">
+                    <h3 class="course-title">{{ $courses->title }}</h3>
+                    <p class="course-description">{{ $courses->description }}</p>
+                    <div class="course-meta">
+                        <span>Créditos: {{ $courses->credits }}</span>
+                        <span>Horas: {{ $courses->hours }}</span>
+                    </div>
+                    <a href="#" class="course-link">Ver Curso</a>
+                    <a href="#" class="btn-edit">Editar</a>
 
                     {{-- NUEVO FORMULARIO PARA ELIMINAR --}}
-                <form action="{{ route('courses.destroy', $courses) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que quieres eliminar este curso?');">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" 
-                            style="background: #dc3545; color: white; padding: 10px; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 14px;">
-                        Eliminar
-                    </button>
+                    @can('delete', $course)
+                    <form action="{{ route('courses.destroy', $courses) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que quieres eliminar este curso?');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn-delete">Eliminar</button>
+                    </form>
+                    @endcan
+                </div>
             </div>
-        </div>
-    @empty
-        <div class="no-courses-message">
-            <p>Aún no hay cursos disponibles. ¡Vuelve pronto!</p>
-        </div>
-    @endforelse
-</div>
+        @empty
+            <div class="no-courses-message">
+                <p>Aún no hay cursos disponibles. ¡Vuelve pronto!</p>
+            </div>
+        @endforelse
     </div>
 </div>
 
-<style>
-.course-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 30px rgba(0,0,0,0.12) !important;
-}
-
-.filter-btn:hover {
-    background: #e69a37 !important;
-    color: white !important;
-}
-
-.filter-btn.active {
-    background: #e69a37 !important;
-    color: white !important;
-}
-
-@media (max-width: 768px) {
-    #courses-grid {
-        grid-template-columns: 1fr !important;
-        gap: 16px !important;
-    }
-}
-</style>
 
 <script>
 // Filtros

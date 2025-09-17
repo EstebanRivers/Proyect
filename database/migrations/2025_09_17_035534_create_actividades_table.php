@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('actividades', function (Blueprint $table) {
+        Schema::create('activities', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('tema_id')->constrained()->onDelete('cascade');
+            $table->foreignId('topic_id')->constrained()->onDelete('cascade');
             $table->string('title');
             $table->text('description')->nullable();
             $table->string('type'); // e.g., 'quiz', 'assignment', '
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('actividades');
+        Schema::dropIfExists('activities');
     }
 };

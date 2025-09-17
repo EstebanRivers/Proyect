@@ -25,7 +25,7 @@ class TopicsController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validatedData = $request->validate([
-            'curso_id' => 'required|exists:courses,id',
+            'course_id' => 'required|exists:courses,id',
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'file' => 'nullable|file|mimes:pdf,doc,docx,pptx,mp4,mov,avi,wmv|max51200',

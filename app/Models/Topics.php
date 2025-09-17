@@ -12,7 +12,7 @@ class Topics extends Model
     use HasFactory;
 
     protected $fillable = [
-        'curso_id',
+        'course_id',
         'title',
         'description',
     ];
@@ -22,7 +22,7 @@ class Topics extends Model
      */
     public function course(): BelongsTo
     {
-        return $this->belongsTo(Course::class ,'curso_id');
+        return $this->belongsTo(Course::class ,'course_id');
     }
 
     /**
@@ -30,6 +30,6 @@ class Topics extends Model
      */
     public function activities(): HasMany
     {
-        return $this->hasMany(Activities::class, 'tema_id');
+        return $this->hasMany(Activities::class, 'topic_id');
     }
 }

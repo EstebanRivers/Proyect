@@ -12,7 +12,7 @@ class Activities extends Model
     use HasFactory;
 
     protected $fillable = [
-        'tema_id',
+        'topic_id',
         'title',
         'description',
         'type',
@@ -24,6 +24,6 @@ class Activities extends Model
      */
     public function topic(): BelongsTo
     {
-        return $this->belongsTo(Topics::class, 'tema_id');
+        return $this->belongsTo(Topics::class, 'topic_id');
     }
 }

@@ -3,8 +3,9 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Role;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -15,17 +16,18 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             RoleSeeder::class,
-            CourseSeeder::class,
         ]);
 
-        // User::factory(10)->create();
+        $adminRole = 
+        Role::where('name', 'admin')->first();
 
-        $adminUser = User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-            'carrera' => 'Licenciatura en Sistemas y Seguridad Informática',
+        if ($adminRole){ User::create([
+            'name' => 'Master',
+            'email' => 'admin@uhta.com',
+            'password'=>Hash::make('admin123'),
+            'carrera' => 'N/A',
             'matricula' => 'UHTA001',
-            'semestre' => 8,
+            'semestre' => '10',
             'telefono' => '1234567896',
             'curp' => 'ABCD123456HDFGHI01',
             'fecha_nacimiento' => '2000-01-15',
@@ -35,10 +37,8 @@ class DatabaseSeeder extends Seeder
             'ciudad' => 'Acapulco de Juárez',
             'estado' => 'Guerrero',
             'codigo_postal' => '39300',
-        ]);
-
-        // Asignar rol de admin al usuario de prueba
-        $adminUser->assignRole('admin');
+        ])->roles()->attach($adminRole);
+    }
 
         // Crear usuarios adicionales con diferentes roles
         $teacher = User::factory()->create([

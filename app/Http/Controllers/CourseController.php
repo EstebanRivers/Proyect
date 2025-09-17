@@ -39,7 +39,7 @@ class CourseController extends Controller
             'credits' => 'required|integer|min:0',
             'hours' => 'required|integer|min:0',
             'prerequisites' => 'nullable|array',
-            'prerequisites.*' => 'exists:cursos,id',
+            'prerequisites.*' => 'exists:courses,id',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 

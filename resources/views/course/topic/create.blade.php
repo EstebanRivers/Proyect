@@ -79,9 +79,9 @@
                     <h4 style="margin: 0 0 10px 0;">{{ $topic->title }}</h4>
                     <p style="margin: 0 0 15px 0; color: #666; font-size: 14px;">{{ $topic->description }}</p>
 
-                    @if ($tema->file_path)
+                    @if ($topic->file_path)
                         <div style="margin-bottom: 15px;">
-                            <a href="{{ asset('storage/' . $tema->file_path) }}" target="_blank" 
+                            <a href="{{ asset('storage/' . $topic->file_path) }}" target="_blank" 
                             style="display: inline-flex; align-items: center; text-decoration: none; font-size: 14px; color: #007bff; font-weight: 500;">
                                 📎 Ver Archivo Adjunto
                             </a>
@@ -104,7 +104,7 @@
                     {{-- Formulario para Añadir Nueva Actividad --}}
                     <form action="{{ route('activities.store') }}" method="POST"> {{-- La acción la definiremos en el siguiente paso --}}
                         @csrf
-                        <input type="hidden" name="tema_id" value="{{ $topic->id }}">
+                        <input type="hidden" name="topic_id" value="{{ $topic->id }}">
                          <h5 style="margin-top: 20px; margin-bottom: 10px; color: #333; border-top: 1px solid #ddd; padding-top: 15px;">Nueva Actividad</h5>
                         <div style="margin-bottom: 10px;">
                             <input type="text" name="title" placeholder="Título de la actividad (ej. Resumen del Tema 1)" required 

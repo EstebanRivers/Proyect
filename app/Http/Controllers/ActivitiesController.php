@@ -11,7 +11,7 @@ class ActivitiesController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validatedData = $request->validate([
-            'tema_id' => 'required|exists:topics,id',
+            'topic_id' => 'required|exists:topics,id',
             'title' => 'required|string|max:255',
             'type' => 'required|string',
             'content' => 'required|string',

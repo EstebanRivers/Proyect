@@ -14,17 +14,13 @@ return new class extends Migration
         // Tabla de cursos
         Schema::create('courses', function (Blueprint $table) {
             $table->id();
-            $table->string('code')->nullable();
             $table->string('title');
             $table->text('description');
             $table->text('short_description')->nullable();
             $table->integer('credits')->default(0);
-            $table->integer('duration_hours')->default(0);
-            $table->enum('difficulty', ['basico', 'intermedio', 'avanzado'])->default('basico');
+            $table->integer('hours')->default(0);
             $table->enum('status', ['activo', 'inactivo', 'borrador'])->default('borrador');
             $table->string('image')->nullable();
-            $table->integer('max_students')->default(30);
-            $table->integer('min_students')->default(5);
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->foreignId('instructor_id')->constrained('users')->onDelete('cascade');
