@@ -6,6 +6,17 @@
 <div style="max-width: 800px; margin: 0 auto; padding: 20px;">
     <h1 style="color: #333; margin-bottom: 30px; font-size: 28px;">Crear Nuevo Curso</h1>
 
+    @if ($errors->any())
+    <div style="background-color: #f8d7da; color: #721c24; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+        <strong>¡Ups! Hubo algunos problemas con tu entrada.</strong>
+        <ul style="margin-top: 10px; padding-left: 20px;">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
     {{-- Formulario para crear el curso --}}
     <form action="{{ route('courses.store') }}" method="POST">
         @csrf {{-- Token de seguridad de Laravel --}}

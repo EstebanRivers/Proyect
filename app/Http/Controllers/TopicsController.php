@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Course;
 use App\Models\Topics;
-use Illuminate\Http\RedirectResponse;  
+use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
 class TopicsController extends Controller
@@ -16,7 +16,7 @@ class TopicsController extends Controller
     public function create(Course $course): View
     {
         $course->load('topics.activities');
-        return view('topics.create', ['course' => $course]);
+        return view('course.topic.create', ['course' => $course]);
     }
 
     /**
@@ -25,10 +25,17 @@ class TopicsController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validatedData = $request->validate([
-            'curso_id' => 'required|exists:cursos,id',
+            'curso_id' => 'required|exists:courses,id',
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'file' => 'nullable|file|mimes:pdf,doc,docx,pptx,mp4,mov,avi,wmv|max51200',
         ]);
+
+        if ($request->hasFile('file')){
+            $path = $request->files('file')->store('topic_files', 'public');
+
+            $validatedData['file_path']=$path;
+        }
 
         Topics::create($validatedData);
 

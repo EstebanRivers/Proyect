@@ -26,21 +26,40 @@
     <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 30px;">
         {{-- Columna del formulario para añadir un nuevo tema --}}
         <div style="background: #f8f9fa; padding: 20px; border-radius: 12px;">
+            @if ($errors->any())
+                <div style="background-color: #f8d7da; color: #721c24; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                    <strong>¡Ups! Hubo algunos problemas:</strong>
+                    <ul style="margin-top: 10px; padding-left: 20px; margin-bottom: 0;">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
             <h3 style="margin-top: 0; color: #333;">Añadir Nuevo Tema</h3>
-            <form action="{{ route('temas.store') }}" method="POST">
+            <form action="{{ route('topics.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
-                <input type="hidden" name="curso_id" value="{{ $course->id }}">
+                <input type="hidden" name="course_id" value="{{ $course->id }}">
 
+                {{-- Título del Tema --}}
                 <div style="margin-bottom: 15px;">
                     <label for="title" style="display: block; margin-bottom: 5px; font-weight: 600;">Título del Tema</label>
                     <input type="text" id="title" name="title" required
-                           style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ccc;">
+                        style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ccc;">
                 </div>
 
+                {{-- Descripción (más grande) --}}
                 <div style="margin-bottom: 15px;">
-                    <label for="description" style="display: block; margin-bottom: 5px; font-weight: 600;">Descripción (opcional)</label>
-                    <textarea id="description" name="description" rows="3"
-                              style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ccc;"></textarea>
+                    <label for="description" style="display: block; margin-bottom: 5px; font-weight: 600;">Descripción Detallada del Tema</label>
+                    <textarea id="description" name="description" rows="5"
+                            style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ccc;"></textarea>
+                </div>
+
+                {{-- NUEVO CAMPO PARA SUBIR ARCHIVO --}}
+                <div style="margin-bottom: 20px;">
+                    <label for="file" style="display: block; margin-bottom: 5px; font-weight: 600;">Adjuntar Archivo (PDF, Word, PPT)</label>
+                    <input type="file" id="file" name="file"
+                        style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ccc; background: white;">
                 </div>
 
                 <button type="submit"
@@ -60,6 +79,15 @@
                     <h4 style="margin: 0 0 10px 0;">{{ $topic->title }}</h4>
                     <p style="margin: 0 0 15px 0; color: #666; font-size: 14px;">{{ $topic->description }}</p>
 
+                    @if ($tema->file_path)
+                        <div style="margin-bottom: 15px;">
+                            <a href="{{ asset('storage/' . $tema->file_path) }}" target="_blank" 
+                            style="display: inline-flex; align-items: center; text-decoration: none; font-size: 14px; color: #007bff; font-weight: 500;">
+                                📎 Ver Archivo Adjunto
+                            </a>
+                        </div>
+                    @endif
+
                     {{-- Lista de Actividades Existentes --}}
                     <div style="margin-bottom: 15px;">
                         @if($topic->activities->count() > 0)
@@ -76,16 +104,29 @@
                     {{-- Formulario para Añadir Nueva Actividad --}}
                     <form action="{{ route('activities.store') }}" method="POST"> {{-- La acción la definiremos en el siguiente paso --}}
                         @csrf
-                        <input type="hidden" name="topic_id" value="{{ $topic->id }}">
-                        <div style="display: flex; gap: 10px; align-items: center;">
-                            <input type="text" name="title" placeholder="Título de la nueva actividad" required style="flex: 1; padding: 8px; border-radius: 6px; border: 1px solid #ccc;">
-                            <select name="type" style="padding: 8px; border-radius: 6px; border: 1px solid #ccc;">
-                                <option value="lectura">Lectura</option>
-                                <option value="video">Video</option>
-                                <option value="cuestionario">Cuestionario</option>
-                            </select>
-                            <button type="submit" style="background: #007bff; color: white; padding: 8px 12px; border: none; border-radius: 6px; cursor: pointer;">+</button>
+                        <input type="hidden" name="tema_id" value="{{ $topic->id }}">
+                         <h5 style="margin-top: 20px; margin-bottom: 10px; color: #333; border-top: 1px solid #ddd; padding-top: 15px;">Nueva Actividad</h5>
+                        <div style="margin-bottom: 10px;">
+                            <input type="text" name="title" placeholder="Título de la actividad (ej. Resumen del Tema 1)" required 
+                                style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ccc;">
                         </div>
+
+                        <div style="margin-bottom: 10px;">
+                            <select name="type" required style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ccc; background: white;">
+                                <option value="" disabled selected>Selecciona el tipo de actividad...</option>
+                                <option value="Resumen">Resumen</option>
+                                <option value="Preguntas">Preguntas</option>
+                            </select>
+                        </div>
+
+                        <div style="margin-bottom: 10px;">
+                            <textarea name="content" rows="4" placeholder="Escribe aquí las instrucciones, el resumen a realizar o las preguntas para el estudiante..." required 
+                                    style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ccc;"></textarea>
+                        </div>
+
+                        <button type="submit" style="background: #007bff; color: white; width: 100%; padding: 10px; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">
+                            + Añadir Actividad
+                        </button>
                         {{-- Campo de contenido (lo añadiremos después para que no sea muy complejo) --}}
                     </form>
                 </div>

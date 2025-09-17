@@ -40,7 +40,6 @@ class CourseController extends Controller
             'hours' => 'required|integer|min:0',
             'prerequisites' => 'nullable|array',
             'prerequisites.*' => 'exists:cursos,id',
-            'instructor_id' => 'required|exists:users,id',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
@@ -48,9 +47,12 @@ class CourseController extends Controller
 
         $courseData['instructor_id'] = Auth::id();
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('public/cursos');
-            $courseData['image'] = $path;
+            $path = $request->file('image')->store('courses', 'public');
+            $courseData['image_path'] = $path;
         }
+
+         unset($courseData['image']); 
+
 
 
         if (!empty($validatedData['prerequisites'])) {
@@ -59,7 +61,7 @@ class CourseController extends Controller
 
         $course = Course::create($courseData);
 
-        return redirect()->route('course.topics.create', ['curso' => $course->id])->with('success', 'Curso creado exitosamente.');
+        return redirect()->route('course.topic.create', ['course' => $course->id])->with('success', 'Curso creado exitosamente.');
     }
 
     /**
@@ -89,8 +91,10 @@ class CourseController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Course $course)
     {
-        //
+        $course->delete();
+
+        return redirect()->route('courses.index')->with('success', 'Curso borrado exitosamente');
     }
 }

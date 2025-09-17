@@ -68,6 +68,19 @@
                     <span>Horas: {{ $courses->hours }}</span>
                 </div>
                 <a href="#" class="course-link">Ver Curso</a>
+                <a href="" {{-- La ruta la definiremos pronto --}}
+                    style="background: #ffc107; color: white; padding: 10px; border-radius: 8px; text-decoration: none; font-weight: 500; font-size: 14px;">
+                    Editar
+                </a>
+
+                    {{-- NUEVO FORMULARIO PARA ELIMINAR --}}
+                <form action="{{ route('courses.destroy', $courses) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que quieres eliminar este curso?');">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" 
+                            style="background: #dc3545; color: white; padding: 10px; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 14px;">
+                        Eliminar
+                    </button>
             </div>
         </div>
     @empty
