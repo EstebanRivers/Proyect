@@ -59,7 +59,7 @@ class CourseController extends Controller
 
         $course = Course::create($courseData);
 
-        return redirect()->route('course.topic.create', ['curso' => $course->id])->with('success', 'Curso creado exitosamente.');
+        return redirect()->route('course.topics.create', ['curso' => $course->id])->with('success', 'Curso creado exitosamente.');
     }
 
     /**
