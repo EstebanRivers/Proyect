@@ -43,8 +43,8 @@
             <label for="prerequisites" style="display: block; margin-bottom: 8px; font-weight: 600;">Prerrequisitos (opcional)</label>
             <select id="prerequisites" name="prerequisites[]" multiple
                     style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; min-height: 120px;">
-                @foreach ($courses as $course)
-                    <option value="{{ $course->id }}">{{ $course->title }}</option>
+                @foreach ($course as $courses)
+                    <option value="{{ $courses->id }}">{{ $courses->title }}</option>
                 @endforeach
             </select>
             <small style="color: #666;">Mantén presionada la tecla Ctrl (o Cmd en Mac) para seleccionar varios cursos.</small>

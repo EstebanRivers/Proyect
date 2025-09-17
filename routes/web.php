@@ -38,7 +38,7 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['role:admin,docente'])->group(function () {
         Route::get('/cursos/crear', [CourseController::class, 'create'])->name('courses.create');
         Route::post('/cursos', [CourseController::class, 'store'])->name('courses.store');
-        Route::get('/cursos/{course}/temas/crear', [TopicsController::class, 'create'])->name('courses.topics.create'); // <--- AÑADIDO Y CORREGIDO
+        Route::get('/cursos/{course}/temas/crear', [TopicsController::class, 'create'])->name('course.topic.create'); // <--- AÑADIDO Y CORREGIDO
 
         Route::post('/temas', [TopicsController::class, 'store'])->name('topics.store');
         Route::get('/actividades', [ActivitiesController::class, 'store'])->name('activities.create');

@@ -57,15 +57,15 @@
 
     <!-- Grid de cursos -->
 <div class="courses-container">
-    @forelse ($courses as $course)
+    @forelse ($course as $courses)
         <div class="course-card">
-            <img src="{{ $course->image_path ?? 'path/to/default/image.jpg' }}" alt="Imagen del curso">
+            <img src="{{ $courses->image_path ?? 'path/to/default/image.jpg' }}" alt="Imagen del curso">
             <div class="course-info">
-                <h3 class="course-title">{{ $course->title }}</h3>
-                <p class="course-description">{{ $course->description }}</p>
+                <h3 class="course-title">{{ $courses->title }}</h3>
+                <p class="course-description">{{ $courses->description }}</p>
                 <div class="course-meta">
-                    <span>Créditos: {{ $course->credits }}</span>
-                    <span>Horas: {{ $course->hours }}</span>
+                    <span>Créditos: {{ $courses->credits }}</span>
+                    <span>Horas: {{ $courses->hours }}</span>
                 </div>
                 <a href="#" class="course-link">Ver Curso</a>
             </div>

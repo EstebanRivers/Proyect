@@ -15,8 +15,8 @@ class CourseController extends Controller
      */
     public function index(): View
     {
-        $courses = Course::all();
-        return view('courses.index', compact('courses'));
+        $course = Course::all();
+        return view('course.index', compact('course'));
     }
 
     /**
@@ -24,8 +24,8 @@ class CourseController extends Controller
      */
     public function create(): View
     {
-        $courses = Course::all();
-        return view('courses.create', compact('courses'));
+        $course = Course::all();
+        return view('course.create', compact('course'));
     }
 
     /**
@@ -57,9 +57,9 @@ class CourseController extends Controller
             $courseData['prerequisites'] = json_encode($validatedData['prerequisites']);
         }
 
-        $courses = Course::create($courseData);
+        $course = Course::create($courseData);
 
-        return redirect()->route('courses.topics.create', ['curso' => $courses->id])->with('success', 'Curso creado exitosamente.');
+        return redirect()->route('course.topic.create', ['curso' => $course->id])->with('success', 'Curso creado exitosamente.');
     }
 
     /**
