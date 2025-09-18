@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\Course;
 use App\Models\User;
+use Illuminate\Auth\Access\Response;
 
 class CoursePolicy
 {
@@ -13,6 +14,15 @@ class CoursePolicy
     public function viewAny(User $user): bool
     {
         return true; // Todos pueden ver la lista de cursos
+    }
+
+    public function before(User $user, string $ability): bool|null
+    {
+        
+        if ($user->hasRole('admin')) {
+            return true;
+        }
+        return null;
     }
 
     /**

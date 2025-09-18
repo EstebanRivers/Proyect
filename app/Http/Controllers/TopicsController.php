@@ -28,11 +28,11 @@ class TopicsController extends Controller
             'course_id' => 'required|exists:courses,id',
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'file' => 'nullable|file|mimes:pdf,doc,docx,pptx,mp4,mov,avi,wmv|max51200',
+            'file' => 'nullable|file|mimes:pdf,doc,docx,pptx,mp4,mov,avi,wmv|max:51200',
         ]);
 
         if ($request->hasFile('file')){
-            $path = $request->files('file')->store('topic_files', 'public');
+            $path = $request->file('file')->store('topic_files', 'public');
 
             $validatedData['file_path']=$path;
         }

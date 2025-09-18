@@ -163,7 +163,7 @@
     text-decoration: none;
     font-weight: 500;
     font-size: 14px;
-    display: inline-block;
+    display: block;
     margin-top: 5px;
     transition: background 0.2s ease;
 }

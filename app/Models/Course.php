@@ -23,7 +23,7 @@ class Course extends Model
 
     ];
     protected $casts = [
-        'prerequisites' => 'array', // <-- AÑADE ESTA PROPIEDAD Y ESTA LÍNEA
+        'prerequisites' => 'array', 
     ];
 
     public function instructor()

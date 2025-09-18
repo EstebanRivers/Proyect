@@ -11,12 +11,19 @@ class Activities extends Model
 {
     use HasFactory;
 
+    protected $table = 'activities';
+
     protected $fillable = [
         'topic_id',
         'title',
         'description',
         'type',
+        'content',
         
+    ];
+
+    protected $casts = [
+        'content' => 'array',
     ];
 
     /**

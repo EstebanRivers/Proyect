@@ -14,8 +14,18 @@ class ActivitiesController extends Controller
             'topic_id' => 'required|exists:topics,id',
             'title' => 'required|string|max:255',
             'type' => 'required|string',
-            'content' => 'required|string',
+            'content' => 'required|array',
         ]);
+
+        if ($validatedData['type']==='Cuestionario'){
+            $request->validate([
+                'content.question' => 'required|string',
+                'content.options' => 'required|array|min:4',
+                'content.options.*' => 'required|string',
+                'content.correct.answer' => 'required',
+
+            ]);
+        }
 
         Activities::create($validatedData);
 

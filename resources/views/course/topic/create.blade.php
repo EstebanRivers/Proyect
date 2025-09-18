@@ -3,7 +3,7 @@
 @section('title', 'Añadir Temas a ' . $course->title)
 
 @section('content')
-<div style="max-width: 900px; margin: 0 auto; padding: 20px;">
+<div style="max-width: 1200px; margin: 1%; padding: 20px;">
 
     {{-- Mensaje de éxito --}}
     @if (session('success'))
@@ -102,32 +102,58 @@
                     </div>
 
                     {{-- Formulario para Añadir Nueva Actividad --}}
-                    <form action="{{ route('activities.store') }}" method="POST"> {{-- La acción la definiremos en el siguiente paso --}}
+                    <form action="{{ route('activities.store') }}" method="POST">
                         @csrf
                         <input type="hidden" name="topic_id" value="{{ $topic->id }}">
-                         <h5 style="margin-top: 20px; margin-bottom: 10px; color: #333; border-top: 1px solid #ddd; padding-top: 15px;">Nueva Actividad</h5>
+
+                        <h5 style="margin-top: 20px; margin-bottom: 10px; color: #333; border-top: 1px solid #ddd; padding-top: 15px;">Nueva Actividad</h5>
+                        
+                        {{-- Título de la Actividad --}}
                         <div style="margin-bottom: 10px;">
-                            <input type="text" name="title" placeholder="Título de la actividad (ej. Resumen del Tema 1)" required 
+                            <input type="text" name="title" placeholder="Título de la actividad" required 
                                 style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ccc;">
                         </div>
 
+                        {{-- Selector de Tipo de Actividad (El Disparador) --}}
                         <div style="margin-bottom: 10px;">
-                            <select name="type" required style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ccc; background: white;">
+                            <select name="type" required class="activity-type-selector"
+                                    style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ccc; background: white;">
                                 <option value="" disabled selected>Selecciona el tipo de actividad...</option>
-                                <option value="Resumen">Resumen</option>
-                                <option value="Preguntas">Preguntas</option>
+                                <option value="Cuestionario">Cuestionario</option>
+                                <option value="SopaDeLetras">Sopa de Letras</option>
+                                {{-- Aquí puedes añadir más tipos en el futuro --}}
                             </select>
                         </div>
 
-                        <div style="margin-bottom: 10px;">
-                            <textarea name="content" rows="4" placeholder="Escribe aquí las instrucciones, el resumen a realizar o las preguntas para el estudiante..." required 
-                                    style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ccc;"></textarea>
+                        {{-- Contenedor para los campos dinámicos --}}
+                        <div class="activity-fields-container">
+                            
+                            {{-- Campos para el Cuestionario (inicialmente oculto) --}}
+                            <div class="activity-fields" id="fields-Cuestionario" style="display: none; border: 1px solid #ccc; padding: 10px; border-radius: 6px;">
+                                <div style="margin-bottom: 10px;">
+                                    <label style="font-weight: 500;">Pregunta del cuestionario:</label>
+                                    <input type="text" name="content[question]" class="form-field-cuestionario"
+                                        placeholder="Escribe la pregunta aquí" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ccc;">
+                                </div>
+                                <div>
+                                    <label style="font-weight: 500;">Opciones de respuesta (marca la correcta):</label>
+                                    @for ($i = 0; $i < 4; $i++)
+                                        <div style="display: flex; align-items: center; gap: 10px; margin-top: 5px;">
+                                            <input type="radio" name="content[correct_answer]" value="{{ $i }}">
+                                            <input type="text" name="content[options][]" class="form-field-cuestionario"
+                                                placeholder="Opción {{ $i + 1 }}" style="flex: 1; padding: 8px; border-radius: 6px; border: 1px solid #ccc;">
+                                        </div>
+                                    @endfor
+                                </div>
+                            </div>
+
+                            {{-- Aquí puedes añadir los campos para la Sopa de Letras en el futuro --}}
+
                         </div>
 
-                        <button type="submit" style="background: #007bff; color: white; width: 100%; padding: 10px; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">
+                        <button type="submit" style="background: #007bff; color: white; width: 100%; padding: 10px; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; margin-top: 10px;">
                             + Añadir Actividad
                         </button>
-                        {{-- Campo de contenido (lo añadiremos después para que no sea muy complejo) --}}
                     </form>
                 </div>
             @empty
@@ -139,3 +165,37 @@
     </div>
 </div>
 @endsection
+
+@once
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Seleccionamos todos los selectores de tipo de actividad
+        const selectors = document.querySelectorAll('.activity-type-selector');
+
+        selectors.forEach(selector => {
+            selector.addEventListener('change', function () {
+                const selectedType = this.value;
+                const form = this.closest('form');
+                
+                // Ocultamos todos los campos de actividad dentro de este formulario
+                const allFields = form.querySelectorAll('.activity-fields');
+                allFields.forEach(field => {
+                    field.style.display = 'none';
+                    // Deshabilitamos los inputs para que no se envíen si están ocultos
+                    field.querySelectorAll('.form-field-cuestionario').forEach(input => input.required = false);
+                });
+
+                // Mostramos los campos del tipo seleccionado
+                const activeFields = form.querySelector('#fields-' + selectedType);
+                if (activeFields) {
+                    activeFields.style.display = 'block';
+                    // Habilitamos los inputs para que sean requeridos al mostrarse
+                    activeFields.querySelectorAll('.form-field-cuestionario').forEach(input => input.required = true);
+                }
+            });
+        });
+    });
+</script>
+@endpush
+@endonce

@@ -38,6 +38,7 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['role:admin,docente'])->group(function () {
         Route::get('/cursos/crear', [CourseController::class, 'create'])->name('courses.create');
         Route::post('/cursos', [CourseController::class, 'store'])->name('courses.store');
+        Route::get('/cursos/{course}', [CourseController::class, 'show'])->name('course.show');
         Route::delete('/cursos/{course}', [CourseController::class, 'destroy'])->name('courses.destroy');
         Route::get('/cursos/{course}/temas/crear', [TopicsController::class, 'create'])->name('course.topic.create');
         Route::post('/temas', [TopicsController::class, 'store'])->name('topics.store');

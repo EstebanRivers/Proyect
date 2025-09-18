@@ -74,6 +74,8 @@ class User extends Authenticatable
      */
     public function hasRole(string $roleName): bool
     {
+        //dd($this->roles->pluck('name'));
+
         return $this->roles()->where('name', $roleName)->exists();
     }
 
@@ -82,7 +84,7 @@ class User extends Authenticatable
      */
     public function hasAnyRole(array $roles): bool
     {
-        return $this->roles()->whereIn('name', $roles)->exists();
+        return $this->roles()->whereIn('name', values: $roles)->exists();
     }
 
     /**

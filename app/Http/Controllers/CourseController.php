@@ -67,9 +67,11 @@ class CourseController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Course $course)
     {
-        //
+        $course->load('topics.activities');
+
+        return view('course.show', ['course'=>$course]);
     }
 
     /**

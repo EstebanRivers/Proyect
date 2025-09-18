@@ -51,11 +51,12 @@
                         <span>Créditos: {{ $courses->credits }}</span>
                         <span>Horas: {{ $courses->hours }}</span>
                     </div>
-                    <a href="#" class="course-link">Ver Curso</a>
-                    <a href="#" class="btn-edit">Editar</a>
+                    <a href="{{ route('course.show', $courses)}}" class="course-link">Ver Curso</a>
+
+                    <button type="submit" href="#" class="btn-edit">Editar</a>
 
                     {{-- NUEVO FORMULARIO PARA ELIMINAR --}}
-                    @can('delete', $course)
+                    @can('delete', $courses)
                     <form action="{{ route('courses.destroy', $courses) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que quieres eliminar este curso?');">
                         @csrf
                         @method('DELETE')
