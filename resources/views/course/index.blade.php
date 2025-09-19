@@ -4,7 +4,6 @@
 
 @vite(['resources/css/courses.css', 'resources/js/app.js'])
 
-
 @section('content')
 <div class="courses-wrapper">
     <!-- Header -->

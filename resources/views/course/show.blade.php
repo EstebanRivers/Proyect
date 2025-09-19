@@ -2,54 +2,126 @@
 
 @section('title', $course->title)
 
-@section('content')
-<div class="course-container" style="max-width: 1200px; margin: auto; padding: 20px; font-family: sans-serif;">
+@vite(['resources/css/courseShow.css', 'resources/js/app.js'])
 
-    {{-- Encabezado del Curso --}}
-    <header style="margin-bottom: 30px;">
-        <h1 style="font-size: 2.5em; margin-bottom: 10px;">{{ $course->title }}</h1>
-        <p style="font-size: 1.1em; color: #555;">{{ $course->description }}</p>
-        {{-- Aquí puedes añadir la barra de progreso más adelante --}}
+@section('content')
+<div class="course-viewer-container">
+
+    {{-- ENCABEZADO --}}
+    <header class="course-header">
+        <h1>{{ $course->title }}</h1>
+        <a href="{{ route('courses.index') }}" class="btn-secondary">
+            &larr; Volver a Cursos
+        </a>
     </header>
 
-    {{-- Contenido Principal del Curso --}}
-    <main>
-        @forelse ($course->topics as $topic)
-            <div class="topic-card" style="margin-bottom: 25px; background: #f9f9f9; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                
-                {{-- Encabezado del Tema --}}
-                <h2 style="font-size: 1.8em; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 15px;">{{ $topic->title }}</h2>
-                
-                {{-- Descripción y Archivos del Tema --}}
-                <div class="topic-content" style="margin-bottom: 20px;">
+    <div class="course-layout">
+
+        {{-- COLUMNA DERECHA (TEMARIO / NAVEGACIÓN) --}}
+        <div class="course-syllabus">
+            <h3>Contenido del Curso</h3>
+            @foreach ($course->topics as $topic)
+                <div class="topic-group">
+                    <strong class="syllabus-link" data-target="#content-topic-{{ $topic->id }}">
+                        {{ $topic->title }}
+                    </strong>
+                    <ul>
+                        @foreach ($topic->activities as $activity)
+                            <li class="syllabus-link" data-target="#content-activity-{{ $activity->id }}">
+                                - {{ $activity->title }}
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endforeach
+        </div>
+
+        {{-- COLUMNA IZQUIERDA (VISOR DE CONTENIDO) --}}
+        <div class="content-viewer">
+
+            {{-- Contenido por defecto --}}
+            <div class="content-panel" id="content-default" style="display: block;">
+                <h2>Bienvenido al curso</h2>
+                <p>Selecciona un tema o actividad de la lista de la derecha para comenzar.</p>
+                @if($course->image_path)
+                    <img src="{{ asset('storage/' . $course->image_path) }}" alt="Portada del curso" class="course-cover">
+                @endif
+            </div>
+
+            {{-- Paneles dinámicos --}}
+            @foreach ($course->topics as $topic)
+                {{-- Panel Tema --}}
+                <div class="content-panel" id="content-topic-{{ $topic->id }}">
+                    <h2>{{ $topic->title }}</h2>
                     <p>{{ $topic->description }}</p>
                     @if ($topic->file_path)
-                        <a href="{{ asset('storage/' . $topic->file_path) }}" target="_blank" style="display: inline-block; background: #007bff; color: white; padding: 8px 15px; border-radius: 5px; text-decoration: none;">
-                            📎 Descargar Material
+                        <a href="{{ asset('storage/' . $topic->file_path) }}" target="_blank" class="btn-primary">
+                            📎 Ver/Descargar Material del Tema
                         </a>
                     @endif
                 </div>
 
-                {{-- Lista de Actividades del Tema --}}
-                <div class="activities-list">
-                    <h3 style="font-size: 1.4em; margin-bottom: 10px;">Actividades</h3>
-                    @forelse ($topic->activities as $activity)
-                        <div class="activity-item" style="border-left: 3px solid #e69a37; padding-left: 15px; margin-bottom: 15px;">
-                            <h4 style="margin: 0 0 5px 0;">{{ $activity->title }} ({{ $activity->type }})</h4>
-                            <p style="margin: 0; color: #666;">{{ $activity->content }}</p>
-                            {{-- Aquí irían los botones para que el alumno complete la actividad --}}
-                        </div>
-                    @empty
-                        <p style="color: #888;">Este tema no tiene actividades asignadas.</p>
-                    @endforelse
-                </div>
+                {{-- Panel Actividades --}}
+                @foreach ($topic->activities as $activity)
+                    <div class="content-panel" id="content-activity-{{ $activity->id }}">
+                        <h3>{{ $activity->title }} ({{ $activity->type }})</h3>
+                        
+                        @if ($activity->type == 'Cuestionario' && is_array($activity->content))
+                            <form action="#" method="POST">
+                                @csrf
+                                <p class="question-text">
+                                    {{ $activity->content['question'] ?? '' }}
+                                </p>
+                                
+                                @foreach ($activity->content['options'] as $index => $option)
+                                    <div class="option-box">
+                                        <label>
+                                            <input type="radio" name="answer" value="{{ $index }}" {{ Auth::id() == $course->instructor_id ? 'disabled' : '' }}>
+                                            {{ $option }}
+                                        </label>
+                                    </div>
+                                @endforeach
 
-            </div>
-        @empty
-            <div style="text-align: center; padding: 50px; background: #f9f9f9; border-radius: 8px;">
-                <p>Este curso aún no tiene temas.</p>
-            </div>
-        @endforelse
-    </main>
+                                @if (Auth::id() != $course->instructor_id)
+                                    <button type="submit" class="btn-success">Enviar Respuesta</button>
+                                @else
+                                    <p class="instructor-note">(Vista de previsualización para el instructor)</p>
+                                @endif
+                            </form>
+                        @else
+                            <p>{{ is_array($activity->content) ? json_encode($activity->content) : $activity->content }}</p>
+                        @endif
+                    </div>
+                @endforeach
+            @endforeach
+        </div>
+    </div>
 </div>
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const links = document.querySelectorAll('.syllabus-link');
+        const contentPanels = document.querySelectorAll('.content-panel');
+        const syllabusListItems = document.querySelectorAll('.course-syllabus .syllabus-link');
+
+        links.forEach(link => {
+            link.addEventListener('click', function () {
+                const targetId = this.dataset.target;
+
+                // Ocultar todos los paneles
+                contentPanels.forEach(panel => panel.style.display = 'none');
+
+                // Mostrar panel elegido
+                const targetPanel = document.querySelector(targetId);
+                if (targetPanel) targetPanel.style.display = 'block';
+                
+                // Resaltar link activo
+                syllabusListItems.forEach(item => item.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    });
+</script>
+@endpush
 @endsection

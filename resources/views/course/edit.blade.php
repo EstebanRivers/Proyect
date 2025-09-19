@@ -18,7 +18,7 @@
     @endif
 
     {{-- Formulario para crear el curso --}}
-    <form action="{{ route('courses.update') }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('courses.update', $course->id) }}" method="POST" enctype="multipart/form-data">
         @csrf {{-- Token de seguridad de Laravel --}}
         @method('PUT') {{-- Actualizacion --}}
 

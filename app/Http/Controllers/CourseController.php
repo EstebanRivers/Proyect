@@ -99,7 +99,6 @@ class CourseController extends Controller
             'description' => 'required|string',
             'credits' => 'required|integer|min:0',
             'hours' => 'required|integer|min:0',
-            'difficulty' => 'required|string',
             'prerequisites' => 'nullable|array',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
