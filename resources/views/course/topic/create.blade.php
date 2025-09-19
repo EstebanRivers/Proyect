@@ -2,175 +2,162 @@
 
 @section('title', 'Añadir Temas a ' . $course->title)
 
+@vite(['resources/css/topic.css', 'resources/js/app.js'])
+
 @section('content')
-<div style="max-width: 1200px; margin: 1%; padding: 20px;">
+<div class="topics-container">
 
     {{-- Mensaje de éxito --}}
     @if (session('success'))
-        <div style="background-color: #d4edda; color: #155724; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+        <div class="alert-success">
             {{ session('success') }}
         </div>
     @endif
 
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+    {{-- Encabezado --}}
+    <div class="topics-header">
         <div>
-            <h1 style="color: #333; margin-bottom: 0;">Añadir Temas y Actividades</h1>
-            <h2 style="color: #e69a37; margin-top: 5px; font-weight: 500;">Curso: {{ $course->title }}</h2>
+            <h1>Añadir Temas y Actividades</h1>
+            <h2>Curso: {{ $course->title }}</h2>
         </div>
-        <a href="{{ route('courses.index') }}" 
-           style="background: #6c757d; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600;">
+        <a href="{{ route('courses.index') }}" class="btn-secondary">
             Finalizar
         </a>
     </div>
 
-    <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 30px;">
-        {{-- Columna del formulario para añadir un nuevo tema --}}
-        <div style="background: #f8f9fa; padding: 20px; border-radius: 12px;">
+    <div class="topics-layout">
+        {{-- Columna del formulario --}}
+        <div class="topics-form">
             @if ($errors->any())
-                <div style="background-color: #f8d7da; color: #721c24; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                <div class="alert-danger">
                     <strong>¡Ups! Hubo algunos problemas:</strong>
-                    <ul style="margin-top: 10px; padding-left: 20px; margin-bottom: 0;">
+                    <ul>
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
                         @endforeach
                     </ul>
                 </div>
             @endif
-            <h3 style="margin-top: 0; color: #333;">Añadir Nuevo Tema</h3>
+
+            <h3>Añadir Nuevo Tema</h3>
             <form action="{{ route('topics.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <input type="hidden" name="course_id" value="{{ $course->id }}">
 
-                {{-- Título del Tema --}}
-                <div style="margin-bottom: 15px;">
-                    <label for="title" style="display: block; margin-bottom: 5px; font-weight: 600;">Título del Tema</label>
-                    <input type="text" id="title" name="title" required
-                        style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ccc;">
+                {{-- Título --}}
+                <div class="form-group">
+                    <label for="title">Título del Tema</label>
+                    <input type="text" id="title" name="title" required>
                 </div>
 
-                {{-- Descripción (más grande) --}}
-                <div style="margin-bottom: 15px;">
-                    <label for="description" style="display: block; margin-bottom: 5px; font-weight: 600;">Descripción Detallada del Tema</label>
-                    <textarea id="description" name="description" rows="5"
-                            style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ccc;"></textarea>
+                {{-- Descripción --}}
+                <div class="form-group">
+                    <label for="description">Descripción Detallada del Tema</label>
+                    <textarea id="description" name="description" rows="5"></textarea>
                 </div>
 
-                {{-- NUEVO CAMPO PARA SUBIR ARCHIVO --}}
-                <div style="margin-bottom: 20px;">
-                    <label for="file" style="display: block; margin-bottom: 5px; font-weight: 600;">Adjuntar Archivo (PDF, Word, PPT)</label>
-                    <input type="file" id="file" name="file"
-                        style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ccc; background: white;">
+                {{-- Archivo --}}
+                <div class="form-group">
+                    <label for="file">Adjuntar Archivo (PDF, Word, PPT)</label>
+                    <input type="file" id="file" name="file">
                 </div>
 
-                <button type="submit"
-                        style="background: #28a745; color: white; width: 100%; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
-                    + Añadir Tema
-                </button>
+                <button type="submit" class="btn-success">+ Añadir Tema</button>
             </form>
         </div>
 
-        {{-- Columna para listar los temas existentes --}}
-        <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
-            <h3 style="margin-top: 0; color: #333;">Temas del Curso ({{ $course->topics->count() }})</h3>
+        {{-- Columna lista de temas --}}
+        <div class="topics-list">
+            <h3>Temas del Curso ({{ $course->topics->count() }})</h3>
             
             @forelse ($course->topics as $topic)
-                <div style="background: #f8f9fa; border-radius: 8px; padding: 15px; margin-bottom: 15px;">
-                    {{-- Título del Tema --}}
-                    <h4 style="margin: 0 0 10px 0;">{{ $topic->title }}</h4>
-                    <p style="margin: 0 0 15px 0; color: #666; font-size: 14px;">{{ $topic->description }}</p>
-                    <form action="{{ route('topics.destroy', $topic) }}" 
-                        method="POST" onsubmit="return confirm('¿Estás seguro de que quieres eliminar este tema? ¡Todas sus actividades también se borrarán!');">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" style="background: #dc3545; color: white; border: none; border-radius: 5px; padding: 5px 10px; cursor: pointer; font-size: 12px;">
-                            Eliminar Tema
-                        </button>
-                    </form>
+                <div class="topic-card">
+                    <div class="topic-header">
+                        <h4>{{ $topic->title }}</h4>
+
+                        {{-- Eliminar tema --}}
+                        <form action="{{ route('topics.destroy', $topic) }}" method="POST" onsubmit="return confirm('¿Eliminar este tema y todas sus actividades?');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn-danger" title="Eliminar" >
+                                <img src="{{asset('icons/trash-solid-full.svg')}}" alt="Eliminar" style="width:24px;height:24px" loading="lazy">
+                            </button>
+                        </form>
+                    </div>
+
+                    <p>{{ $topic->description }}</p>
+
+                    {{-- Archivo adjunto --}}
                     @if ($topic->file_path)
-                        <div style="margin-bottom: 15px;">
-                            <a href="{{ asset('storage/' . $topic->file_path) }}" target="_blank" 
-                            style="display: inline-flex; align-items: center; text-decoration: none; font-size: 14px; color: #007bff; font-weight: 500;">
+                        <div class="topic-file">
+                            <a href="{{ asset('storage/' . $topic->file_path) }}" target="_blank">
                                 📎 Ver Archivo Adjunto
                             </a>
                         </div>
                     @endif
 
-                    {{-- Lista de Actividades Existentes --}}
-                    <div style="margin-bottom: 15px;">
+                    {{-- Actividades --}}
+                    <div class="activities-list">
                         @if($topic->activities->count() > 0)
                             @foreach($topic->activities as $activity)
-                                <div style="font-size: 14px; padding: 5px 0; border-bottom: 1px solid #ddd;">
+                                <div class="activity-item">
                                     <strong>{{ $activity->title }}</strong> ({{ $activity->type }})
-                                    <form action="{{ route('activities.destroy', $activity) }}" 
-                                        method="POST" onsubmit="return confirm('¿Estás seguro de que quieres eliminar esta actividad?');">
+                                    <form action="{{ route('activities.destroy', $activity) }}" method="POST" onsubmit="return confirm('¿Eliminar esta actividad?');">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" style="background: none; border: none; color: #dc3545; cursor: pointer; font-weight: bold;">
-                                            &times;
-                                        </button>
+                                        <button type="submit" class="delete-activity">&times;</button>
                                     </form>
                                 </div>
                             @endforeach
                         @else
-                            <p style="font-size: 13px; color: #888;">No hay actividades para este tema.</p>
+                            <p class="no-activities">No hay actividades para este tema.</p>
                         @endif
                     </div>
 
-                    {{-- Formulario para Añadir Nueva Actividad --}}
-                    <form action="{{ route('activities.store') }}" method="POST">
-                        @csrf
-                        <input type="hidden" name="topic_id" value="{{ $topic->id }}">
+                    {{-- Nueva actividad --}}
+                    <div class="activities-layout">
+                        <form action="{{ route('activities.store') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="topic_id" value="{{ $topic->id }}">
 
-                        <h5 style="margin-top: 20px; margin-bottom: 10px; color: #333; border-top: 1px solid #ddd; padding-top: 15px;">Nueva Actividad</h5>
-                        
-                        {{-- Título de la Actividad --}}
-                        <div style="margin-bottom: 10px;">
-                            <input type="text" name="title" placeholder="Título de la actividad" required 
-                                style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ccc;">
-                        </div>
-
-                        {{-- Selector de Tipo de Actividad (El Disparador) --}}
-                        <div style="margin-bottom: 10px;">
-                            <select name="type" required class="activity-type-selector"
-                                    style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ccc; background: white;">
-                                <option value="" disabled selected>Selecciona el tipo de actividad...</option>
-                                <option value="Cuestionario">Cuestionario</option>
-                                <option value="SopaDeLetras">Sopa de Letras</option>
-                                {{-- Aquí puedes añadir más tipos en el futuro --}}
-                            </select>
-                        </div>
-
-                        {{-- Contenedor para los campos dinámicos --}}
-                        <div class="activity-fields-container">
+                            <h5>Nueva Actividad</h5>
                             
-                            {{-- Campos para el Cuestionario --}}
-                            <div class="activity-fields" id="fields-Cuestionario" style="display: none; border: 1px solid #ccc; padding: 10px; border-radius: 6px;">
-                                <div style="margin-bottom: 10px;">
-                                    <label style="font-weight: 500;">Pregunta del cuestionario:</label>
-                                    <input type="text" name="content[question]" class="form-field-cuestionario"
-                                        placeholder="Escribe la pregunta aquí" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ccc;">
-                                </div>
-                                <div>
-                                    <label style="font-weight: 500;">Opciones de respuesta (marca la correcta):</label>
-                                    @for ($i = 0; $i < 4; $i++)
-                                        <div style="display: flex; align-items: center; gap: 10px; margin-top: 5px;">
-                                            <input type="radio" name="content[correct_answer]" value="{{ $i }}">
-                                            <input type="text" name="content[options][]" class="form-field-cuestionario"
-                                                placeholder="Opción {{ $i + 1 }}" style="flex: 1; padding: 8px; border-radius: 6px; border: 1px solid #ccc;">
-                                        </div>
-                                    @endfor
+                            <div class="form-group">
+                                <input type="text" name="title" placeholder="Título de la actividad" required>
+                            </div>
+
+                            <div class="form-group">
+                                <select name="type" required class="activity-type-selector">
+                                    <option value="" disabled selected>Selecciona el tipo...</option>
+                                    <option value="Cuestionario">Cuestionario</option>
+                                    <option value="SopaDeLetras">Sopa de Letras</option>
+                                </select>
+                            </div>
+
+                            <div class="activity-fields-container">
+                                <div class="activity-fields" id="fields-Cuestionario">
+                                    <div class="form-group">
+                                        <label>Pregunta del cuestionario:</label>
+                                        <input type="text" name="content[question]" class="form-field-cuestionario" placeholder="Escribe la pregunta aquí">
+                                    </div>
+                                    <div>
+                                        <label>Opciones de respuesta (marca la correcta):</label>
+                                        @for ($i = 0; $i < 4; $i++)
+                                            <div class="quiz-option">
+                                                <input type="radio" name="content[correct_answer]" value="{{ $i }}">
+                                                <input type="text" name="content[options][]" class="form-field-cuestionario" placeholder="Opción {{ $i + 1 }}">
+                                            </div>
+                                        @endfor
+                                    </div>
                                 </div>
                             </div>
 
-                        </div>
-
-                        <button type="submit" style="background: #007bff; color: white; width: 100%; padding: 10px; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; margin-top: 10px;">
-                            + Añadir Actividad
-                        </button>
-                    </form>
+                            <button type="submit" class="btn-primary">+ Añadir Actividad</button>
+                        </form>
+                    </div>
                 </div>
             @empty
-                <div style="color: #666; text-align: center; padding: 40px 0;">
+                <div class="no-topics">
                     <p>Aún no has añadido ningún tema a este curso.</p>
                 </div>
             @endforelse
@@ -193,6 +180,7 @@
                 
                 // Ocultamos todos los campos de actividad dentro de este formulario
                 const allFields = form.querySelectorAll('.activity-fields');
+
                 allFields.forEach(field => {
                     field.style.display = 'none';
                     // Deshabilitamos los inputs para que no se envíen si están ocultos
