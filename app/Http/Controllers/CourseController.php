@@ -7,9 +7,12 @@ use Illuminate\Http\RedirectResponse;
 use App\Models\Course;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class CourseController extends Controller
 {
+    use AuthorizesRequests;
     /**
      * Muestrar lista de cursos
      */
@@ -77,17 +80,46 @@ class CourseController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Course $course)
     {
-        //
+        return view('course.edit', ['course' => $course]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Course $course)
     {
-        //
+        // 1. Autorización: Usamos la Policy para asegurar que el usuario puede editar este curso
+        $this->authorize('update', $course);
+
+        // 2. Validación: Las reglas son casi idénticas a las de 'store'
+        $validatedData = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'credits' => 'required|integer|min:0',
+            'hours' => 'required|integer|min:0',
+            'difficulty' => 'required|string',
+            'prerequisites' => 'nullable|array',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        // 3. Manejo de la nueva imagen (si se subió una)
+        if ($request->hasFile('image')) {
+            // Borramos la imagen antigua para no acumular archivos basura
+            if ($course->image_path) {
+                Storage::disk('public')->delete($course->image_path);
+            }
+            // Guardamos la nueva imagen y actualizamos la ruta
+            $validatedData['image_path'] = $request->file('image')->store('cursos', 'public');
+        }
+
+        // 4. Actualizamos el curso con los datos validados
+        $course->update($validatedData);
+
+        // 5. Redirigimos al usuario a la lista de cursos con un mensaje de éxito
+        return redirect()->route('courses.index')->with('success', '¡Curso actualizado exitosamente!');
+
     }
 
     /**

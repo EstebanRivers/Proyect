@@ -41,5 +41,14 @@ class TopicsController extends Controller
 
         return back()->with('success', 'Tema creado exitosamente.');
     }
+
+    public function destroy(Topics $topic)
+    {
+        // Gracias al Route Model Binding, Laravel nos encuentra el tema
+        $topic->delete();
+
+        // Redirigimos a la página anterior
+        return back()->with('success', '¡Tema eliminado exitosamente!');
+    }
 }
     

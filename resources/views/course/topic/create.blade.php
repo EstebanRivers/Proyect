@@ -78,7 +78,14 @@
                     {{-- Título del Tema --}}
                     <h4 style="margin: 0 0 10px 0;">{{ $topic->title }}</h4>
                     <p style="margin: 0 0 15px 0; color: #666; font-size: 14px;">{{ $topic->description }}</p>
-
+                    <form action="{{ route('topics.destroy', $topic) }}" 
+                        method="POST" onsubmit="return confirm('¿Estás seguro de que quieres eliminar este tema? ¡Todas sus actividades también se borrarán!');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" style="background: #dc3545; color: white; border: none; border-radius: 5px; padding: 5px 10px; cursor: pointer; font-size: 12px;">
+                            Eliminar Tema
+                        </button>
+                    </form>
                     @if ($topic->file_path)
                         <div style="margin-bottom: 15px;">
                             <a href="{{ asset('storage/' . $topic->file_path) }}" target="_blank" 
@@ -94,6 +101,14 @@
                             @foreach($topic->activities as $activity)
                                 <div style="font-size: 14px; padding: 5px 0; border-bottom: 1px solid #ddd;">
                                     <strong>{{ $activity->title }}</strong> ({{ $activity->type }})
+                                    <form action="{{ route('activities.destroy', $activity) }}" 
+                                        method="POST" onsubmit="return confirm('¿Estás seguro de que quieres eliminar esta actividad?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" style="background: none; border: none; color: #dc3545; cursor: pointer; font-weight: bold;">
+                                            &times;
+                                        </button>
+                                    </form>
                                 </div>
                             @endforeach
                         @else

@@ -32,4 +32,13 @@ class ActivitiesController extends Controller
 
         return back()->with('success', 'Actividad creada exitosamente.');
     }
+
+    public function destroy(Activities $activity)
+    {
+        // 1. Elimina la actividad específica
+        $activity->delete();
+
+        // 2. Redirige al usuario a la página anterior con un mensaje de éxito
+        return back()->with('success', '¡Actividad eliminada exitosamente!');
+    }
 }
