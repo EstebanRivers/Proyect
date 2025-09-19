@@ -128,7 +128,7 @@
                         {{-- Contenedor para los campos dinámicos --}}
                         <div class="activity-fields-container">
                             
-                            {{-- Campos para el Cuestionario (inicialmente oculto) --}}
+                            {{-- Campos para el Cuestionario --}}
                             <div class="activity-fields" id="fields-Cuestionario" style="display: none; border: 1px solid #ccc; padding: 10px; border-radius: 6px;">
                                 <div style="margin-bottom: 10px;">
                                     <label style="font-weight: 500;">Pregunta del cuestionario:</label>
@@ -146,8 +146,6 @@
                                     @endfor
                                 </div>
                             </div>
-
-                            {{-- Aquí puedes añadir los campos para la Sopa de Letras en el futuro --}}
 
                         </div>
 

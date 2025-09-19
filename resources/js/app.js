@@ -14,7 +14,7 @@ class SimpleSPANavigation {
     }
 
     setupEventListeners() {
-        // Interceptar clics en enlaces del menú (excluyendo el logo)
+        // Interceptar clics en enlaces del menú 
         document.addEventListener('click', (e) => {
             const link = e.target.closest('.menu a');
             if (link && this.shouldIntercept(link)) {
@@ -74,7 +74,7 @@ class SimpleSPANavigation {
                !link.hasAttribute('data-no-intercept') &&
                !link.href.includes('logout') &&
                !link.href.includes('#') &&
-               !link.closest('.brand'); // Excluir enlaces del logo
+               !link.closest('.brand'); 
     }
 
     async navigate(url) {

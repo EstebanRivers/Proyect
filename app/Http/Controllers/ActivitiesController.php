@@ -22,7 +22,7 @@ class ActivitiesController extends Controller
                 'content.question' => 'required|string',
                 'content.options' => 'required|array|min:4',
                 'content.options.*' => 'required|string',
-                'content.correct.answer' => 'required',
+                'content.correct_answer' => 'required',
 
             ]);
         }

@@ -18,7 +18,7 @@
 @endif
 
     {{-- Formulario para crear el curso --}}
-    <form action="{{ route('courses.store') }}" method="POST">
+    <form action="{{ route('courses.store') }}" method="POST" enctype="multipart/form-data">
         @csrf {{-- Token de seguridad de Laravel --}}
 
         {{-- Título del Curso --}}
