@@ -2,7 +2,9 @@
 .courses-wrapper {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 20px;
+    background: #ECF0F1;
+    border-radius: 12px;
 }
 
 /* ===== HEADER ===== */
