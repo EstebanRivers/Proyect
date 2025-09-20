@@ -42,6 +42,9 @@
     font-size: 16px;
     box-shadow: 0 4px 12px rgba(230, 154, 55, 0.3);
     transition: all 0.2s ease;
+    &:hover {
+        background: rgb(26, 26, 132);
+    }
 }
 
 /* ===== FILTROS ===== */

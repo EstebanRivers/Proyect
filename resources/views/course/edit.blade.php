@@ -69,10 +69,16 @@
         </div>
 
         {{-- Botón de Enviar --}}
-        <button type="submit"
-                style="background: #e69a37; color: white; padding: 14px 28px; border: none; border-radius: 12px; cursor: pointer; font-weight: 600; font-size: 16px;">
-            Actualizar Curso
-        </button>
+        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; border-top: 1px solid #eee; padding-top: 20px;">
+            <button type="submit" name="action" value="save_and_exit"
+                    style="background: #6c757d; color: white; padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                Guardar Cambios
+            </button>
+            <button type="submit" name="action" value="save_and_continue"
+                    style="background: #e69a37; color: white; padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                Guardar y Editar Temas &rarr;
+            </button>
+        </div>
     </form>
 </div>
 @endsection

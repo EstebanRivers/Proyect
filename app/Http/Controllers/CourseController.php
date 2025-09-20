@@ -54,7 +54,7 @@ class CourseController extends Controller
             $courseData['image'] = $path;
         }
 
-         unset($courseData['image']); 
+         //unset($courseData['image']); 
 
 
 
@@ -90,10 +90,10 @@ class CourseController extends Controller
      */
     public function update(Request $request, Course $course)
     {
-        // 1. Autorización: Usamos la Policy para asegurar que el usuario puede editar este curso
+        // Autorización: Usamos la Policy para asegurar que el usuario puede editar este curso
         $this->authorize('update', $course);
 
-        // 2. Validación: Las reglas son casi idénticas a las de 'store'
+        // Validación: Las reglas son casi idénticas a las de 'store'
         $validatedData = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
@@ -103,7 +103,7 @@ class CourseController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        // 3. Manejo de la nueva imagen (si se subió una)
+        // Manejo de la nueva imagen (si se subió una)
         if ($request->hasFile('image')) {
             // Borramos la imagen antigua para no acumular archivos basura
             if ($course->image) {
@@ -113,10 +113,17 @@ class CourseController extends Controller
             $validatedData['image'] = $request->file('image')->store('courses', 'public');
         }
 
-        // 4. Actualizamos el curso con los datos validados
+        // Actualizamos el curso con los datos validados
         $course->update($validatedData);
 
-        // 5. Redirigimos al usuario a la lista de cursos con un mensaje de éxito
+         // Si el usuario hizo clic en "Guardar y Editar Temas"
+        if ($request->input('action') == 'save_and_continue') {
+            return redirect()->route('course.topic.create', ['course' => $course->id])
+                    ->with('success', '¡Curso actualizado! Ahora puedes editar sus temas.');
+        }
+
+
+        // Redirigimos al usuario a la lista de cursos con un mensaje de éxito
         return redirect()->route('courses.index')->with('success', '¡Curso actualizado exitosamente!');
 
     }
