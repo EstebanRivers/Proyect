@@ -30,7 +30,7 @@
 
 /* ===== BOTÓN CREAR CURSO ===== */
 .btn-create {
-    background: #e69a37;
+    background: #223F70;
     color: white;
     padding: 14px 28px;
     border: none;
@@ -40,10 +40,6 @@
     font-size: 16px;
     box-shadow: 0 4px 12px rgba(230, 154, 55, 0.3);
     transition: all 0.2s ease;
-}
-
-.btn-create:hover {
-    background: #cf842b;
 }
 
 /* ===== FILTROS ===== */
@@ -56,9 +52,10 @@
 
 .filter-btn {
     padding: 8px 16px;
-    border: 2px solid #e69a37;
-    background: transparent;
-    color: #e69a37;
+    border: 1px #BC8A55;
+    background: #ACACAC;
+    color: #FFFFFF;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
     border-radius: 20px;
     cursor: pointer;
     font-size: 14px;
@@ -68,8 +65,8 @@
 
 .filter-btn:hover,
 .filter-btn.active {
-    background: #e69a37;
-    color: white;
+    background: #BC8A55;
+    color: #FFFFFF;
 }
 
 /* Variantes */
@@ -117,7 +114,7 @@
 
 .course-card img {
     width: 100%;
-    height: 180px;
+    height: 160px;
     object-fit: cover;
 }
 
@@ -148,45 +145,51 @@
 }
 
 /* ===== BOTONES DE ACCIÓN ===== */
-.course-link {
-    text-decoration: none;
-    color: #1a73e8;
-    font-weight: 500;
-    font-size: 14px;
+.btn-display{
+    display: flex;
+    justify-content: right;
+    align-items: center;    
 }
 
-.btn-edit {
-    background: #ffc107;
-    color: white;
-    padding: 10px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: 500;
-    font-size: 14px;
-    display: block;
-    margin-top: 5px;
-    transition: background 0.2s ease;
-}
-
-.btn-edit:hover {
-    background: #e0a800;
-}
-
-.btn-delete {
-    background: #dc3545;
-    color: white;
+.btn-view {
+    display: flex;
+    max-width: fit-content;
     padding: 10px;
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    font-weight: 500;
-    font-size: 14px;
     transition: background 0.2s ease;
-    margin-top: 5px;
+    margin: 5px;
+    &:hover {
+        background: #223F70;
+    }
 }
 
-.btn-delete:hover {
-    background: #b52a37;
+.btn-edit {
+    display: flex;
+    max-width: fit-content;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    margin: 5px;
+    &:hover {
+        background: #e0a800;
+    }
+}
+
+.btn-delete {
+    display: flex;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    margin: 5px;
+    &:hover {
+        background: #b52a37;
+    }
 }
 
 /* ===== MENSAJE SIN CURSOS ===== */

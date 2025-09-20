@@ -58,7 +58,7 @@
 
                 {{-- Archivo --}}
                 <div class="form-group">
-                    <label for="file">Adjuntar Archivo (PDF, Word, PPT)</label>
+                    <label for="file">Adjuntar Archivo (PDF, Word, PPT o Video)</label>
                     <input type="file" id="file" name="file">
                 </div>
 

@@ -15,6 +15,7 @@ class Topics extends Model
         'course_id',
         'title',
         'description',
+        'file_path',
     ];
 
     /**

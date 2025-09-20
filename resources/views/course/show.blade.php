@@ -43,8 +43,8 @@
             <div class="content-panel" id="content-default" style="display: block;">
                 <h2>Bienvenido al curso</h2>
                 <p>Selecciona un tema o actividad de la lista de la derecha para comenzar.</p>
-                @if($course->image_path)
-                    <img src="{{ asset('storage/' . $course->image_path) }}" alt="Portada del curso" class="course-cover">
+                @if($course->image)
+                    <img src="{{ asset('storage/' . $course->image) }}" alt="Portada del curso" class="course-cover">
                 @endif
             </div>
 
@@ -53,12 +53,40 @@
                 {{-- Panel Tema --}}
                 <div class="content-panel" id="content-topic-{{ $topic->id }}">
                     <h2>{{ $topic->title }}</h2>
-                    <p>{{ $topic->description }}</p>
-                    @if ($topic->file_path)
-                        <a href="{{ asset('storage/' . $topic->file_path) }}" target="_blank" class="btn-primary">
-                            📎 Ver/Descargar Material del Tema
-                        </a>
-                    @endif
+                    {{-- Descripción y Archivos del Tema --}}
+                    <div class="topic-content" style="margin-bottom: 20px;">
+                        <p>{{ $topic->description }}</p>
+                        
+                        {{-- LÓGICA INTELIGENTE PARA MOSTRAR EL ARCHIVO --}}
+                        @if ($topic->file_path)
+                            @php
+                                $extension = strtolower(pathinfo($topic->file_path, PATHINFO_EXTENSION));
+                                $videoExtensions = ['mp4', 'mov', 'webm', 'ogg'];
+                            @endphp
+
+                            {{-- CASO 1: Si es un PDF --}}
+                            @if ($extension == 'pdf')
+                                <div class="file-viewer" style="margin-top: 15px;">
+                                    <iframe src="{{ asset('storage/' . $topic->file_path) }}" width="100%" height="600px" style="border: 1px solid #ccc; border-radius: 5px;"></iframe>
+                                </div>
+
+                            {{-- CASO 2: Si es un Video --}}
+                            @elseif (in_array($extension, $videoExtensions))
+                                <div class="file-viewer" style="margin-top: 15px;">
+                                    <video width="100%" controls style="border-radius: 5px; background: #000;">
+                                        <source src="{{ asset('storage/' . $topic->file_path) }}" type="video/{{ $extension }}">
+                                        Tu navegador no soporta la reproducción de video.
+                                    </video>
+                                </div>
+                                
+                            {{-- CASO 3: Cualquier otro archivo (Fallback) --}}
+                            @else
+                                <a href="{{ asset('storage/' . $topic->file_path) }}" target="_blank" style="display: inline-block; background: #007bff; color: white; padding: 8px 15px; border-radius: 5px; text-decoration: none; margin-top: 10px;">
+                                    📎 Descargar Material ({{ strtoupper($extension) }})
+                                </a>
+                            @endif
+                        @endif
+                    </div>
                 </div>
 
                 {{-- Panel Actividades --}}

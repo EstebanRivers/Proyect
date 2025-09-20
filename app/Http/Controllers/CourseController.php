@@ -51,7 +51,7 @@ class CourseController extends Controller
         $courseData['instructor_id'] = Auth::id();
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('courses', 'public');
-            $courseData['image_path'] = $path;
+            $courseData['image'] = $path;
         }
 
          unset($courseData['image']); 
@@ -106,11 +106,11 @@ class CourseController extends Controller
         // 3. Manejo de la nueva imagen (si se subió una)
         if ($request->hasFile('image')) {
             // Borramos la imagen antigua para no acumular archivos basura
-            if ($course->image_path) {
-                Storage::disk('public')->delete($course->image_path);
+            if ($course->image) {
+                Storage::disk('public')->delete($course->image);
             }
             // Guardamos la nueva imagen y actualizamos la ruta
-            $validatedData['image_path'] = $request->file('image')->store('cursos', 'public');
+            $validatedData['image'] = $request->file('image')->store('courses', 'public');
         }
 
         // 4. Actualizamos el curso con los datos validados

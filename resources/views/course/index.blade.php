@@ -42,7 +42,7 @@
     <div class="courses-container">
         @forelse ($course as $courses)
             <div class="course-card">
-                <img src="{{ $courses->image_path ?? 'path/to/default/image.jpg' }}" alt="Imagen del curso">
+                <img src="{{ asset('storage/' . $courses->image) }}" alt="Imagen del curso">
                 <div class="course-info">
                     <h3 class="course-title">{{ $courses->title }}</h3>
                     <p class="course-description">{{ $courses->description }}</p>
@@ -50,21 +50,31 @@
                         <span>Créditos: {{ $courses->credits }}</span>
                         <span>Horas: {{ $courses->hours }}</span>
                     </div>
-                    <a href="{{ route('course.show', $courses)}}" class="course-link">Ver Curso</a>
 
-                @can('update', $courses)
-                        <a href="{{ route('courses.edit', $courses) }}">
-                            Editar
-                        </a>
-                    @endcan
-                    {{-- NUEVO FORMULARIO PARA ELIMINAR --}}
-                    @can('delete', $courses)
-                    <form action="{{ route('courses.destroy', $courses) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que quieres eliminar este curso?');">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn-delete">Eliminar</button>
-                    </form>
-                    @endcan
+                    <div class="btn-display">
+                        <button type="submit" class="btn-view">
+                            <a href="{{ route('course.show', $courses)}}">
+                                <img src="{{asset('icons/eye-solid-full.svg')}}" alt="" style="width:27;height:27px" loading="lazy">
+                            </a>
+                        </button>
+                        @can('update', $courses)
+                            <button type="submit" class="btn-edit">
+                                <a href="{{ route('courses.edit', $courses) }}">
+                                <img src="{{asset('icons/pen-to-square-solid-full.svg')}}" alt="" style="width:27;height:27px" loading="lazy">
+                                </a>
+                            </button>
+                        @endcan
+                        {{-- NUEVO FORMULARIO PARA ELIMINAR --}}
+                        @can('delete', $courses)
+                            <form action="{{ route('courses.destroy', $courses) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que quieres eliminar este curso?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn-delete">
+                                    <img src="{{asset('icons/Vector.svg')}}" alt="" style="width:38;height:25px" loading="lazy">
+                                </button>
+                            </form>
+                        @endcan
+                    </div>
                 </div>
             </div>
         @empty

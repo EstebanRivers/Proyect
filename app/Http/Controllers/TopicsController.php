@@ -28,7 +28,7 @@ class TopicsController extends Controller
             'course_id' => 'required|exists:courses,id',
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'file' => 'nullable|file|mimes:pdf,doc,docx,pptx,mp4,mov,avi,wmv|max:51200',
+            'file_path' => 'nullable|file|mimes:pdf,doc,docx,pptx,mp4,mov,avi,wmv|max:51200',
         ]);
 
         if ($request->hasFile('file')){

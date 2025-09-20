@@ -55,10 +55,10 @@
 
         
          {{-- Imagen Actual --}}
-        @if ($course->image_path)
+        @if ($course->image)
             <div style="margin-bottom: 10px;">
                 <label>Imagen Actual:</label>
-                <img src="{{ asset('storage/' . $course->image_path) }}" alt="Imagen del curso" style="max-width: 200px; border-radius: 8px;">
+                <img src="{{ asset('storage/' . $course->image) }}" alt="Imagen del curso" style="max-width: 200px; border-radius: 8px;">
             </div>
         @endif
         
