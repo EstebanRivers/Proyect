@@ -57,20 +57,22 @@
                     <div class="topic-content" style="margin-bottom: 20px;">
                         <p>{{ $topic->description }}</p>
                         
-                        {{-- LÓGICA INTELIGENTE PARA MOSTRAR EL ARCHIVO --}}
+                        {{-- LÓGICA PARA MOSTRAR EL ARCHIVO --}}
                         @if ($topic->file_path)
                             @php
                                 $extension = strtolower(pathinfo($topic->file_path, PATHINFO_EXTENSION));
                                 $videoExtensions = ['mp4', 'mov', 'webm', 'ogg'];
+                                $imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp']; // Lista de extensiones de imagen
+
                             @endphp
 
-                            {{-- CASO 1: Si es un PDF --}}
+                            {{-- Si es un PDF --}}
                             @if ($extension == 'pdf')
                                 <div class="file-viewer" style="margin-top: 15px;">
                                     <iframe src="{{ asset('storage/' . $topic->file_path) }}" width="100%" height="600px" style="border: 1px solid #ccc; border-radius: 5px;"></iframe>
                                 </div>
 
-                            {{-- CASO 2: Si es un Video --}}
+                            {{-- Si es un Video --}}
                             @elseif (in_array($extension, $videoExtensions))
                                 <div class="file-viewer" style="margin-top: 15px;">
                                     <video width="100%" controls style="border-radius: 5px; background: #000;">
@@ -78,8 +80,14 @@
                                         Tu navegador no soporta la reproducción de video.
                                     </video>
                                 </div>
+
+                            {{-- Si es una Imagen --}}
+                            @elseif (in_array($extension, $imageExtensions))
+                                <div class="file-viewer" style="margin-top: 15px;">
+                                    <img src="{{ asset('storage/' . $topic->file_path) }}" alt="Material del tema" style="max-width: 100%; border-radius: 8px; border: 1px solid #eee;">
+                                </div>
                                 
-                            {{-- CASO 3: Cualquier otro archivo (Fallback) --}}
+                            {{-- Cualquier otro archivo (Fallback) --}}
                             @else
                                 <a href="{{ asset('storage/' . $topic->file_path) }}" target="_blank" style="display: inline-block; background: #007bff; color: white; padding: 8px 15px; border-radius: 5px; text-decoration: none; margin-top: 10px;">
                                     📎 Descargar Material ({{ strtoupper($extension) }})

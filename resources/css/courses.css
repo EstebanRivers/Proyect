@@ -12,7 +12,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 40px;
+    margin-bottom: 15px;
     flex-wrap: wrap;
     gap: 20px;
 }
@@ -98,8 +98,8 @@
 /* ===== CURSOS ===== */
 .courses-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 24px;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));    
+    gap: 20px;
 }
 
 .course-card {
@@ -124,10 +124,10 @@
 }
 
 .course-info {
-    padding: 16px;
+    padding: 10px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
 }
 
 .course-title {
@@ -152,19 +152,20 @@
 /* ===== BOTONES DE ACCIÓN ===== */
 .btn-display{
     display: flex;
-    justify-content: right;
+    justify-content: flex-end;
     align-items: center;    
+    grid-row: 2px;
 }
 
 .btn-view {
     display: flex;
     max-width: fit-content;
-    padding: 10px;
+    padding: 7px;
     border: none;
     border-radius: 8px;
     cursor: pointer;
     transition: background 0.2s ease;
-    margin: 5px;
+    margin: 1px;
     &:hover {
         background: #223F70;
     }
@@ -173,12 +174,12 @@
 .btn-edit {
     display: flex;
     max-width: fit-content;
-    padding: 10px;
+    padding: 7px;
     border: none;
     border-radius: 8px;
     cursor: pointer;
     transition: background 0.2s ease;
-    margin: 5px;
+    margin: 1px;
     &:hover {
         background: #e0a800;
     }
@@ -186,12 +187,12 @@
 
 .btn-delete {
     display: flex;
-    padding: 10px;
+    padding: 7px;
     border: none;
     border-radius: 8px;
     cursor: pointer;
     transition: background 0.2s ease;
-    margin: 5px;
+    margin: 1px;
     &:hover {
         background: #b52a37;
     }

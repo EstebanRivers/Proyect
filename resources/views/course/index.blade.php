@@ -27,7 +27,7 @@
     </div>
 
     <!-- Filtros rápidos -->
-    <div class="courses-filters">
+    {{-- <div class="courses-filters">
         <button class="filter-btn active" data-filter="all">Todos</button>
         <button class="filter-btn" data-filter="basico">Básico</button>
         <button class="filter-btn" data-filter="intermedio">Intermedio</button>
@@ -36,7 +36,7 @@
             <button class="filter-btn available" data-filter="available">Disponibles para mí</button>
             <button class="filter-btn enrolled" data-filter="enrolled">Mis Cursos</button>
         @endif
-    </div>
+    </div> --}}
 
     <!-- Grid de cursos -->
     <div class="courses-container">
