@@ -2,7 +2,7 @@
     max-width: 1200px;
     margin: 1% auto;
     padding: 20px;
-    font-family: 'Segoe UI', Tahoma, sans-serif;
+    font-family: 'Poppins', Tahoma, sans-serif;
 }
 
 /* Alertas */
@@ -36,6 +36,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    
 }
 
 .topics-header h1 {
@@ -67,6 +68,7 @@
 }
 .topics-form {
     background: #ECF0F1;
+    max-height: fit-content;
 }
 .topics-list {
     background: #ECF0F1;
@@ -95,34 +97,42 @@
 .btn-success {
     display: inline-block;
     border: none;
-    border-radius: 6px;
-    padding: 10px 20px;
+    border-radius: 5px;
+    padding: 10px 8px;
     cursor: pointer;
-    font-weight: 600;
+    font-weight: 500;
     text-decoration: none;
     text-align: center;
 }
 .btn-primary {
-    background: #007bff;
+    background: #223F70;
     color: white;
+    max-height: fit-content;
+    padding: 5px;
+    &:hover {
+        background: #0056b3;
+    }
 }
-.btn-primary:hover {
-    background: #0056b3;
-}
+
 .btn-secondary {
-    background: #6c757d;
+    background: #223F70;
     color: white;
+    width: 140px;
+    font-size: large;
 }
 .btn-secondary:hover {
     background: #545b62;
 }
 .btn-success {
-    background: #28a745;
+    background: #223F70;
     color: white;
+    max-width: fit-content;
+    max-height: fit-content;
+    &:hover {
+        background: #0056b3;
+    }
 }
-.btn-success:hover {
-    background: #1e7e34;
-}
+
 .btn-danger {
     background: none;
     border: none;

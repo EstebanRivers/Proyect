@@ -29,7 +29,7 @@
   flex: 1;
   min-height: 100vh;
   background: var(--page-bg);
-  padding: var(--spacing-xl);
+  padding: 10px;
   transition: opacity var(--transition-fast), transform var(--transition-fast);
   overflow-x: hidden;
   overflow-y: auto;

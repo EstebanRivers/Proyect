@@ -3,7 +3,7 @@
 @section('title', 'Editar Curso - ' .$course->title) {{-- Titulo Dinamico --}}
 
 @section('content')
-<div style="max-width: 800px; margin: 0 auto; padding: 20px;">
+<div style="max-width: 800px; margin: 0 auto; padding: 20px; background-color: #ECF0F1; border-radius: 14px;">
     <h1 style="color: #333; margin-bottom: 30px; font-size: 28px;">Editar Curso</h1>
 
     @if ($errors->any())

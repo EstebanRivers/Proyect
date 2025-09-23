@@ -156,7 +156,7 @@ html,body,#app{ height:100%; }
 /* ---------- MAIN (contenido) ---------- */
 .main-content{
   flex: 1;
-  padding: 40px;
+  padding: 30px;
   display: flex;
   align-items: center;
   justify-content: center;

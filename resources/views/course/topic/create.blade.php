@@ -38,8 +38,10 @@
                     </ul>
                 </div>
             @endif
-
+            <div class="header-topic" style="display:flex; justify-content: space-between;">
             <h3>Añadir Nuevo Tema</h3>
+            <button type="submit" class="btn-success">+ Añadir Tema </button>
+            </div>
             <form action="{{ route('topics.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <input type="hidden" name="course_id" value="{{ $course->id }}">
@@ -61,14 +63,12 @@
                     <label for="file">Adjuntar Archivo (PDF, Word, PPT o Video)</label>
                     <input type="file" id="file" name="file">
                 </div>
-
-                <button type="submit" class="btn-success">+ Añadir Tema</button>
             </form>
         </div>
 
         {{-- Columna lista de temas --}}
         <div class="topics-list">
-            <h3>Temas del Curso ({{ $course->topics->count() }})</h3>
+            <h3>Temas del Curso ({{ $course->topics->count() }})</h3><br>
             
             @forelse ($course->topics as $topic)
                 <div class="topic-card">
@@ -80,7 +80,7 @@
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn-danger" title="Eliminar" >
-                                <img src="{{asset('icons/trash-solid-full.svg')}}" alt="Eliminar" style="width:24px;height:24px" loading="lazy">
+                                <img src="{{asset('icons/Vector.svg')}}" alt="Eliminar" style="width:24px;height:24px" loading="lazy">
                             </button>
                         </form>
                     </div>
@@ -120,7 +120,10 @@
                             @csrf
                             <input type="hidden" name="topic_id" value="{{ $topic->id }}">
 
-                            <h5>Nueva Actividad</h5>
+                            <div class="header-activity" style="display:flex; justify-content: space-between; margin-bottom: 10px;">
+                            <h5 font-size="10px">Nueva Actividad</h5>
+                            <button type="submit" class="btn-primary">+ Añadir Actividad</button>
+                            </div>
                             
                             <div class="form-group">
                                 <input type="text" name="title" placeholder="Título de la actividad" required>
@@ -151,8 +154,6 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <button type="submit" class="btn-primary">+ Añadir Actividad</button>
                         </form>
                     </div>
                 </div>

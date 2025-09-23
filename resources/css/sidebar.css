@@ -67,13 +67,12 @@
 }
 
 .menu li a:hover .icon {
-  background: var(--accent-light);
+  filter: brightness(0) saturate(100%) invert(55%) sepia(60%) saturate(900%) hue-rotate(330deg) brightness(105%) contrast(100%);
   transform: scale(1.05);
 }
 
 .menu li.active a .icon {
-  background: var(--accent);
-  color: #fff;
+  filter: brightness(0) saturate(100%) invert(55%) sepia(60%) saturate(900%) hue-rotate(330deg) brightness(105%) contrast(100%);
   box-shadow: var(--pill-shadow);
 }
 
