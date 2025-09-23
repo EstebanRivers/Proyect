@@ -63,16 +63,16 @@
 
 .menu li.active a {
   color: var(--accent);
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .menu li a:hover .icon {
-  filter: brightness(0) saturate(100%) invert(55%) sepia(60%) saturate(900%) hue-rotate(330deg) brightness(105%) contrast(100%);
+filter: brightness(0) saturate(100%) invert(71%) sepia(26%) saturate(936%) hue-rotate(355deg) brightness(89%) contrast(91%);
   transform: scale(1.05);
 }
 
 .menu li.active a .icon {
-  filter: brightness(0) saturate(100%) invert(55%) sepia(60%) saturate(900%) hue-rotate(330deg) brightness(105%) contrast(100%);
+filter: brightness(0) saturate(100%) invert(71%) sepia(26%) saturate(936%) hue-rotate(355deg) brightness(89%) contrast(91%);
   box-shadow: var(--pill-shadow);
 }
 
@@ -92,7 +92,7 @@
 
 
 .menu li a .text {
-  font-size: 13px;
+  font-size: 14px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
