@@ -10,7 +10,7 @@
     {{-- ENCABEZADO --}}
     <header class="course-header">
         <h1>{{ $course->title }}</h1>
-        <a href="{{ route('courses.index') }}" class="btn-secondary">
+        <a href="{{ route('courses.index') }}" class="btn-secondary" style="width: fit-content">
             &larr; Volver a Cursos
         </a>
     </header>
@@ -21,7 +21,7 @@
         <div class="course-syllabus">
             <h3>Contenido del Curso</h3>
             @foreach ($course->topics as $topic)
-                <div class="topic-group">
+                <div class="topic-group @if($completedTopics->contains($topic->id)) completed-topic @endif">
                     <strong class="syllabus-link" data-target="#content-topic-{{ $topic->id }}">
                         {{ $topic->title }}
                     </strong>
@@ -33,7 +33,22 @@
                         @endforeach
                     </ul>
                 </div>
+                @if ($topic->activities->isEmpty() && !$completedTopics->contains($topic->id))
+                    <form method="POST" action="{{ route('progress.store') }}">
+                        @csrf
+                        <input type="hidden" name="topic_id" value="{{ $topic->id }}">
+                        <button type="submit" class="btn-completar">
+                            Marcar como completado
+                        </button>
+                    </form>
+                @endif
             @endforeach
+            {{-- Barra de Progreso --}}
+            <div class="progress-container">
+                <div class="progress-bar" style="width: {{ $progressPercentage }}%;">
+                    {{ $progressPercentage }}%
+                </div>
+            </div>
         </div>
 
         {{-- COLUMNA IZQUIERDA (VISOR DE CONTENIDO) --}}
@@ -101,9 +116,13 @@
                 @foreach ($topic->activities as $activity)
                     <div class="content-panel" id="content-activity-{{ $activity->id }}">
                         <h3>{{ $activity->title }} ({{ $activity->type }})</h3>
-                        
+                        @if (session('quiz_result'))
+                            <div class="quiz-result">
+                                {{ session('quiz_result') }}
+                            </div>
+                        @endif
                         @if ($activity->type == 'Cuestionario' && is_array($activity->content))
-                            <form action="#" method="POST">
+                            <form action="{{ route('activities.checkAnswer', ['activity' => $activity]) }}" method="POST">
                                 @csrf
                                 <p class="question-text">
                                     {{ $activity->content['question'] ?? '' }}
@@ -141,23 +160,43 @@
         const contentPanels = document.querySelectorAll('.content-panel');
         const syllabusListItems = document.querySelectorAll('.course-syllabus .syllabus-link');
 
+        // Función para mostrar un panel específico
+        function showPanel(targetId) {
+            // Ocultar todos los paneles
+            contentPanels.forEach(panel => panel.style.display = 'none');
+
+            // Mostrar el panel elegido
+            const targetPanel = document.querySelector(targetId);
+            if (targetPanel) {
+                targetPanel.style.display = 'block';
+
+                // Resaltar el link activo en el temario
+                syllabusListItems.forEach(item => item.classList.remove('active'));
+                const activeLink = document.querySelector(`[data-target='${targetId}']`);
+                if (activeLink) {
+                    activeLink.classList.add('active');
+                }
+            }
+        }
+
+        // Al hacer clic en un link del temario
         links.forEach(link => {
             link.addEventListener('click', function () {
                 const targetId = this.dataset.target;
-
-                // Ocultar todos los paneles
-                contentPanels.forEach(panel => panel.style.display = 'none');
-
-                // Mostrar panel elegido
-                const targetPanel = document.querySelector(targetId);
-                if (targetPanel) targetPanel.style.display = 'block';
-                
-                // Resaltar link activo
-                syllabusListItems.forEach(item => item.classList.remove('active'));
-                this.classList.add('active');
+                showPanel(targetId);
             });
         });
+
+        // 🚀 Nuevo: si la URL trae un #hash al cargar, mostramos ese panel
+        if (window.location.hash) {
+            showPanel(window.location.hash);
+        } else if (links.length > 0) {
+            // Si no hay hash, mostramos el primero por defecto
+            const firstTarget = links[0].dataset.target;
+            showPanel(firstTarget);
+        }
     });
 </script>
 @endpush
+
 @endsection

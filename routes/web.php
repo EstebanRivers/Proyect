@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\TopicsController;
 use App\Http\Controllers\ActivitiesController;
+use App\Http\Controllers\ProgressController;
 
 // Rutas de autenticación
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -23,22 +24,27 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', function () {
         return view('dashboard.index');
     })->name('dashboard');
+
+    Route::post('/progress', [ProgressController::class, 'store'])->name('progress.store');
     
     // Perfil - accesible para todos los usuarios autenticados
     Route::get('/mi-informacion', function () { 
         return view('minformacion'); 
     })->name('profile.index');
+
     
     // Cursos - para anfitriones y estudiantes
-    Route::middleware(['role:docente,alumno,admin,anfitrion'])->group(function () {
+    Route::middleware(['role:alumno,anfitrion,admin,docente'])->group(function () {
         Route::get('/cursos', [CourseController::class, 'index'])->name('courses.index');
+        Route::post('/cursos', [CourseController::class, 'store'])->name('courses.store');
+        Route::get('/cursos/{course}', [CourseController::class, 'show'])->name('course.show');
+        Route::post('/activities/{activity}/check', [ActivitiesController::class, 'checkAnswer'])->name('activities.checkAnswer');
     });
     
     // Gestión de cursos - solo para admins y docentes
     Route::middleware(['role:admin,docente'])->group(function () {
         Route::get('/cursos/crear', [CourseController::class, 'create'])->name('courses.create');
         Route::post('/cursos', [CourseController::class, 'store'])->name('courses.store');
-        Route::get('/cursos/{course}', [CourseController::class, 'show'])->name('course.show');
         Route::get('/cursos/{course}/edit', [CourseController::class, 'edit'])->name('courses.edit');
         Route::put('/cursos/{course}', [CourseController::class, 'update'])->name('courses.update');
         Route::delete('/cursos/{course}', [CourseController::class, 'destroy'])->name('courses.destroy');
@@ -47,7 +53,6 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/temas/{topic}', [TopicsController::class, 'destroy'])->name('topics.destroy');
         Route::post('/actividades', [ActivitiesController::class, 'store'])->name('activities.store');
         Route::delete('/actividades/{activity}', [ActivitiesController::class, 'destroy'])->name('activities.destroy');
-
 
     });
     

@@ -3,12 +3,17 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\Progress;
 
+/**
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Progress[] $progress
+ */
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
@@ -109,20 +114,17 @@ class User extends Authenticatable
         }
     }
 
+    public function progress(): HasMany
+    {
+        return $this->hasMany(Progress::class, 'user_id');
+    }
+
     /**
      * Obtener nombres de roles como array
      */
     public function getRoleNames(): array
     {
         return $this->roles->pluck('name')->toArray();
-    }
-
-    /**
-     * Inscripciones del usuario a cursos
-     */
-    public function enrollments(): HasMany
-    {
-        return $this->hasMany(CourseEnrollment::class);
     }
 
     /**

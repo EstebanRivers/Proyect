@@ -72,9 +72,26 @@ class CourseController extends Controller
      */
     public function show(Course $course)
     {
+        $user = Auth::user();
         $course->load('topics.activities');
 
-        return view('course.show', ['course'=>$course]);
+        // 1. OBTENER LOS NÚMEROS
+        // Contamos cuántos temas tiene el curso en total.
+        $totalTopics = $course->topics->count();
+        // Contamos cuántos ha completado el usuario.
+        $completedCount = $user->progress()->whereIn('topic_id', $course->topics->pluck('id'))->count();
+
+        // 2. CALCULAR EL PORCENTAJE (con seguridad para evitar división por cero)
+        $progressPercentage = 0; // Valor por defecto
+        if ($totalTopics > 0) {
+            $progressPercentage = round(($completedCount / $totalTopics) * 100);
+        }
+        
+        // Hacemos lo que ya teníamos: obtener la lista de IDs para marcar los temas
+        $completedTopics = $user->progress()->pluck('topic_id');
+
+        // 3. ENVIAR TODO A LA VISTA
+        return view('course.show', compact('course', 'completedTopics', 'progressPercentage'));
     }
 
     /**
